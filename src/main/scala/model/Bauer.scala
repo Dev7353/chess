@@ -6,4 +6,8 @@ class Bauer extends Figure{
 
     return "B"
   }
+
+  def moveIsAllowed(): Boolean={
+  false //TODO
+  }
 }
