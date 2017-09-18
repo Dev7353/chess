@@ -10,7 +10,7 @@ class GameField {
   }
 
   def isOccupied(spot: Tuple2[Int, Int]): Boolean={
-    if(field(spot._1)(spot._2).isInstanceOf[Figure])
+    if(field(spot._1)(spot._2).getClass().toString().contains("Figure"))
       false
     else
       true
@@ -18,7 +18,8 @@ class GameField {
 
   def update(src: Tuple2[Int, Int],  tar: Tuple2[Int, Int]): Figure ={
     val ret = field(tar._1)(tar._2)
-    field(tar._1)(tar._2) = field(src._1)(src._2)
+    field(tar._1)(tar._2) = get(src)
+    print(get(src).toString())
     field(src._1)(src._2) =  new Figure
 
     ret

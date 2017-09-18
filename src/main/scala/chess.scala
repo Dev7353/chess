@@ -20,6 +20,8 @@ object chess {
         print("You don't have such a figure!\n")
       } else if(ret.isInstanceOf[NoAllowedMoveException])
         print("You're not supposed to make this move!\n")
+      else if(ret.isInstanceOf[OwnTargetException])
+        print("You cannot kill your own figures!\n")
       else{
 
         print("put " + (x,y).toString() + " to " + (t_x, t_y).toString())

@@ -1,6 +1,6 @@
 package controller
 
-import state.{ChessException, NoFigureException, SuccessDraw}
+import state.{ChessException, NoFigureException, OwnTargetException, SuccessDraw}
 import model._
 import observer.Observable
 
@@ -78,15 +78,21 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
   }
 
   def putFigureTo(source: Tuple2[Int, Int], target: Tuple2[Int,Int]): ChessException ={
-    if(!currentPlayer.hasFigure(gamefield.get(source))){
-      new NoFigureException()
+
+    var current_figure = gamefield.get(source)
+
+    if(!currentPlayer.hasFigure(current_figure)){
+      return new NoFigureException()
     }
 
-   /* if(!moveIsAllowed()){
+   /* if(!current_figure.moveIsAllowed(target)){
       NoAllowedMoveException()
     }*/
 
     if(gamefield.isOccupied(target)){
+      if(currentPlayer.hasFigure(gamefield.get(target))){
+        return new OwnTargetException()
+      }
 
       val deadFigure = gamefield.update(source, target)
       currentPlayer.killed(deadFigure) //add dead enemy figure to current players list
@@ -95,7 +101,6 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
     }
 
     notifyObservers
-    print("notify observers")
     new SuccessDraw()
   }
 
