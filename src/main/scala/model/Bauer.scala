@@ -1,13 +1,16 @@
 package model
 
-class Bauer extends Figure{
+class Bauer(kord: Tuple2[Int, Int]) extends Figure{
+
+  var this.kord = kord
 
   override def toString(): String={
 
     return "B"
   }
 
-  def moveIsAllowed(): Boolean={
-  false //TODO
+  def getKord(): Tuple2[Int, Int]={
+    this.kord
   }
+
 }

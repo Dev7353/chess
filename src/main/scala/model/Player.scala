@@ -1,21 +1,26 @@
 package model
-import java.util.LinkedList
+import scala.collection.mutable.ListBuffer
 
 class Player(name:String) {
 
-  var figures:LinkedList[Figure] = new java.util.LinkedList[Figure]()
-  var killed:LinkedList[Figure] = new java.util.LinkedList[Figure]()
+  //var figures:LinkedList[Figure] = new java.util.LinkedList[Figure]()
+  var figures = ListBuffer.empty[Figure]
+  var killed = ListBuffer.empty[Figure]
   def addFigure(figure:Figure): Unit ={
-    figures.add(figure)
+    figures.+=(figure)
   }
 
   def killed(figure: Figure): Unit ={
-    killed.add(figure)
+    figures.+=(figure)
   }
 
   def hasFigure(figure: Figure): Boolean={
-
-    figures.contains(figure)
+    for (f <- figures){
+      if(f eq figure) {
+        return true
+      }
+    }
+    false
   }
 
   override def toString: String = {

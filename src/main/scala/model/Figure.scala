@@ -1,6 +1,6 @@
 package model
 
-class Figure {
+case class Figure() {
   override def toString(): String={
 
     return "_"
