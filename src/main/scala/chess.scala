@@ -36,11 +36,11 @@ object chess {
   def main(args: Array[String]): Unit ={
     // ui, controller objects
     var gamefield: GameField = new GameField()
-    print("Please type Name Player A: ")
-    //val playerA = new Player(scala.io.StdIn.readLine())
+    println("Please type Name Player A: ")
+    val playerA = new Player(scala.io.StdIn.readLine())
 
-    print("Please type Name Player B: ")
-    //val playerB = new Player(scala.io.StdIn.readLine())
+    println("Please type Name Player B: ")
+    val playerB = new Player(scala.io.StdIn.readLine())
     var controller = new Controller(new Player("sese"), new Player("sese"), gamefield)
     var textUi: TextUi = new TextUi("playerA", "playerB", gamefield, controller)
     val graphicUi = new GraphicUi(controller, gamefield)

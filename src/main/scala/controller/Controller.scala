@@ -85,6 +85,7 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
 
   def putFigureTo(source: Tuple2[Int, Int], target: Tuple2[Int,Int]): ChessException ={
 
+    //System.out.println("PutFigureTo debug: " + source + ", " + target);
     var current_figure = gamefield.get(source)
     if(!currentPlayer.hasFigure(current_figure)){
       return new NoFigureException()

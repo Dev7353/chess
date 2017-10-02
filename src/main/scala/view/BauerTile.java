@@ -5,9 +5,10 @@ import java.awt.*;
 
 class BauerTile extends JPanel {
 
-    private Image img = new ImageIcon("C:\\Users\\kiril\\IdeaProjects\\chess\\src\\main\\scala\\view\\bauer1.png").getImage();
+    private Image img;
 
-    public BauerTile() {
+    public BauerTile(int COLOR) {
+        img = new ImageIcon("C:\\Users\\kiril\\IdeaProjects\\chess\\src\\main\\scala\\view\\bauer"+COLOR+".png").getImage();
         Dimension size = new Dimension(img.getWidth(this), img.getHeight(this));
         setPreferredSize(size);
         setMinimumSize(size);
