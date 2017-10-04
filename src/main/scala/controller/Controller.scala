@@ -200,7 +200,7 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
           (source._1+1, source._2-2),
           (source._1+1, source._2+2),
           (source._1+2, source._2-1),
-          (source._1+2, source._2+1),
+          (source._1+2, source._2+1)
         )
 
         for(tuple <- coordinates){
