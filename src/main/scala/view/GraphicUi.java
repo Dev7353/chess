@@ -27,6 +27,9 @@ public class GraphicUi extends JFrame implements Observer {
     private static int WHITE = 0;
     private static int BLACK = 1;
 
+
+    private static JTextField txtPlayerA, txtPlayerB;
+
     public GraphicUi(Controller controller, GameField field){
         this.controller = controller;
         this.controller.add(this);
@@ -41,6 +44,8 @@ public class GraphicUi extends JFrame implements Observer {
 
                 lp.setVisible(false);
 
+                System.out.println("[debug]" + txtPlayerA.getText() + ", " + txtPlayerB.getText());
+
                 draw(container);
 
             }
@@ -50,8 +55,8 @@ public class GraphicUi extends JFrame implements Observer {
         header.setFont(new Font("ComicSans", Font.PLAIN, 50));
         header.setBounds(200, 120 ,300,50);
 
-        JTextField txtPlayerA = new JTextField("Player A...");
-        JTextField txtPlayerB = new JTextField("Player B...");
+        txtPlayerA = new JTextField("Player A...");
+        txtPlayerB = new JTextField("Player B...");
         txtPlayerA.setBounds(250,170,150,30);
         txtPlayerB.setBounds(250,210,150,30);
 
