@@ -17,7 +17,6 @@ public class GraphicUi extends JFrame implements Observer {
         updateFigures();
     }
     private static JLayeredPane gamefield;
-    public static JPanel[][] coord;
     private Container container;
     private static Controller controller;
     private JLayeredPane lp;
@@ -81,7 +80,6 @@ public class GraphicUi extends JFrame implements Observer {
         currentPlayer.setBounds(100,50,120,30);
 
         gamefield.add(currentPlayer);
-        coord = new JPanel[8][8];
         chesslistener = new ChessListener(controller);
         gamefield.setLayout(null);
         gamefield.setPreferredSize(new Dimension(600,600));
@@ -89,7 +87,6 @@ public class GraphicUi extends JFrame implements Observer {
         c.add(gamefield);
 
     }
-    public JPanel copy;
 
     public  void build(){
         int ct = 0;
