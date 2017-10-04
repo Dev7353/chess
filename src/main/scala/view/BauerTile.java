@@ -8,7 +8,7 @@ class BauerTile extends JPanel {
     private Image img;
 
     public BauerTile(int COLOR) {
-        img = new ImageIcon(getClass().getResource("bauer" + COLOR+".png")).getImage();
+        img = new ImageIcon(getClass().getResource("images/bauer" + COLOR+".png")).getImage();
         Dimension size = new Dimension(img.getWidth(this), img.getHeight(this));
         setPreferredSize(size);
         setMinimumSize(size);
