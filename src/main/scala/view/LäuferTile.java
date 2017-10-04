@@ -8,7 +8,7 @@ class LäuferTile extends JPanel {
     private Image img;
 
     public LäuferTile(int COLOR) {
-        img = new ImageIcon("C:\\Users\\kiril\\IdeaProjects\\chess\\src\\main\\scala\\view\\läufer"+COLOR+".png").getImage();
+        img = new ImageIcon(getClass().getResource("läufer" + COLOR+".png")).getImage();
         Dimension size = new Dimension(img.getWidth(this), img.getHeight(this));
         setPreferredSize(size);
         setMinimumSize(size);

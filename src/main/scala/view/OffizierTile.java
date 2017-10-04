@@ -8,7 +8,7 @@ class OffizierTile extends JPanel {
     private Image img;
 
     public OffizierTile(int COLOR) {
-        img = new ImageIcon("C:\\Users\\kiril\\IdeaProjects\\chess\\src\\main\\scala\\view\\offizier"+COLOR+".png").getImage();
+        img = new ImageIcon(getClass().getResource("offizier" + COLOR+".png")).getImage();
         Dimension size = new Dimension(img.getWidth(this), img.getHeight(this));
         setPreferredSize(size);
         setMinimumSize(size);

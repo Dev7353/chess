@@ -8,7 +8,7 @@ class KönigTile extends JPanel {
     private Image img;
 
     public KönigTile(int COLOR) {
-        img = new ImageIcon("C:\\Users\\kiril\\IdeaProjects\\chess\\src\\main\\scala\\view\\könig"+COLOR+".png").getImage();
+        img = new ImageIcon(getClass().getResource("könig" + COLOR+".png")).getImage();
         Dimension size = new Dimension(img.getWidth(this), img.getHeight(this));
         setPreferredSize(size);
         setMinimumSize(size);

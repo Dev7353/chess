@@ -46,7 +46,7 @@ public class GraphicUi extends JFrame implements Observer {
 
             }
         };
-        Cover cover = new Cover(new ImageIcon("C:\\Users\\kiril\\IdeaProjects\\chess\\src\\main\\scala\\view\\chess.jpg").getImage());
+        Cover cover = new Cover(new ImageIcon(getClass().getResource("chess.jpg")).getImage());
         JLabel header= new JLabel("Chess 0.0.0");
         header.setFont(new Font("ComicSans", Font.PLAIN, 50));
         header.setBounds(200, 120 ,300,50);

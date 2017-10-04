@@ -8,7 +8,7 @@ class TurmTile extends JPanel {
     private Image img;
 
     public TurmTile(int COLOR) {
-        img = new ImageIcon("C:\\Users\\kiril\\IdeaProjects\\chess\\src\\main\\scala\\view\\turm"+COLOR+".png").getImage();
+        img = new ImageIcon(getClass().getResource("turm" + COLOR+".png")).getImage();
         Dimension size = new Dimension(img.getWidth(this), img.getHeight(this));
         setPreferredSize(size);
         setMinimumSize(size);
