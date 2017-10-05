@@ -23,11 +23,12 @@ public class ChessListener implements MouseListener {
     public void mouseClicked(MouseEvent e) {
         int x,y = 0;
         int size = 50;
+        int default_pos = 100;
 
         if(hasSelectedSource == false) {
             Rectangle pos = ((JPanel) e.getSource()).getBounds();
-            x = (pos.x - 100) / size;
-            y = (pos.y - 100) / size;
+            x = (pos.x - default_pos) / size;
+            y = (pos.y - default_pos) / size;
 
             source = new Tuple2<>(new Integer(y), new Integer(x));
             //System.out.println("Source " + x + ", " + y);
@@ -37,8 +38,8 @@ public class ChessListener implements MouseListener {
                 ((BauerTile) e.getSource()).repaint();
         }else{
             Rectangle pos = ((JPanel) e.getSource()).getBounds();
-            x = (pos.x - 100) / size;
-            y = (pos.y - 100) / size;
+            x = (pos.x - default_pos) / size;
+            y = (pos.y - default_pos) / size;
 
             target=  new Tuple2<>(new Integer(y), new Integer(x));
 

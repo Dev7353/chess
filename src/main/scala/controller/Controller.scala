@@ -1,16 +1,24 @@
 package controller
 
+import javax.swing.{JButton}
+
 import state._
 import model._
 import observer.Observable
-import util.control.Breaks._
 
+import util.control.Breaks._
 import scala.collection.mutable.ListBuffer
 
-class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends Observable{
+class Controller(gamefield: GameField) extends Observable{
 
-  var currentPlayer = playerA
-  var enemyPlayer = playerB
+  var source: Tuple2[Int, Int] = _
+  var target: Tuple2[Int, Int] = _
+  var round: Int = 0
+  var remoteButton: JButton=_
+  var currentPlayer: Player= _
+  var enemyPlayer: Player = _
+  var playerA: Player = _
+  var playerB: Player = _
   initializeField()
 
   def initializeField(): Unit ={
@@ -32,6 +40,22 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
       gamefield.set((1,p), new Bauer((1,p)))
     }
 
+    gamefield.set((7,0), new Turm())
+    gamefield.set((7,7), new Turm())
+    gamefield.set((7,1), new Läufer())
+    gamefield.set((7,6), new Läufer())
+    gamefield.set((7,2), new Offizier())
+    gamefield.set((7,5), new Offizier())
+    gamefield.set((7,3), new König())
+    gamefield.set((7,4), new Dame())
+    for( p <- 0 to 7){
+      gamefield.set((6,p), new Bauer((6,p)))
+    }
+  }
+
+  def setPlayerA(player:Player): Unit ={
+   playerA = player
+    currentPlayer = playerA
     playerA.addFigure(gamefield.get((0,0)))
     playerA.addFigure(gamefield.get((0,7)))
     playerA.addFigure(gamefield.get((0,1)))
@@ -48,20 +72,11 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
     playerA.addFigure(gamefield.get((1,5)))
     playerA.addFigure(gamefield.get((1,6)))
     playerA.addFigure(gamefield.get((1,7)))
+  }
 
-
-    gamefield.set((7,0), new Turm())
-    gamefield.set((7,7), new Turm())
-    gamefield.set((7,1), new Läufer())
-    gamefield.set((7,6), new Läufer())
-    gamefield.set((7,2), new Offizier())
-    gamefield.set((7,5), new Offizier())
-    gamefield.set((7,3), new König())
-    gamefield.set((7,4), new Dame())
-    for( p <- 0 to 7){
-      gamefield.set((6,p), new Bauer((6,p)))
-    }
-
+  def setPlayerB(player:Player): Unit ={
+    playerB = player
+    enemyPlayer = playerB
     playerB.addFigure(gamefield.get((7,0)))
     playerB.addFigure(gamefield.get((7,7)))
     playerB.addFigure(gamefield.get((7,1)))
@@ -78,9 +93,14 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
     playerB.addFigure(gamefield.get((6,5)))
     playerB.addFigure(gamefield.get((6,6)))
     playerB.addFigure(gamefield.get((6,7)))
+  }
 
 
+  def switchPlayers(): Unit ={
 
+    var z = currentPlayer
+    currentPlayer = enemyPlayer
+    enemyPlayer = z
   }
 
   def putFigureTo(source: Tuple2[Int, Int], target: Tuple2[Int,Int]): ChessException ={
@@ -105,15 +125,12 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
     } else{
       gamefield.update(source, target)
     }
+
+    this.source = source
+    this.target = target
+    this.round += 1
     notifyObservers
     new SuccessDraw()
-  }
-
-  def setNextPlayer(): Unit ={
-    if(currentPlayer == playerA)
-      currentPlayer = playerB
-    else
-      currentPlayer = playerA
   }
 
 
@@ -122,7 +139,7 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
     var möglicheZüge = ListBuffer.empty[Tuple2[Int, Int]]
     source_figure match {
       case b: Bauer => println("Du wählst einen Bauer du Bauer!")
-        return true
+        true
       case t: Turm => println("Du wählst einen Turm!")
         //wenn Ziel nicht mit x oder y Wert übereinstimmt, kann nicht horizontal bzw vertikal gelaufen werden
         if(source._1 == target._1 || source._2 == target._2){
@@ -182,10 +199,10 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
 
           print("[Turm] Mögliche Züge " + möglicheZüge)
           if(möglicheZüge.contains(target))
-            return true
-          else return false
+            true
+          else false
         }
-        else return false
+        else false
 
       case l: Läufer => println("Du wählst einen Läufer!")
         var oben: Tuple2[Int, Int] = (source._1-1, source._2+2)
@@ -206,7 +223,7 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
         for(tuple <- coordinates){
           println("[debug]" + tuple)
 
-          if ((tuple._1 >= 0 && tuple._1 <= 7) && ((tuple._2 >= 0 && tuple._2 <= 7))) {
+          if ((tuple._1 >= 0 && tuple._1 <= 7) && tuple._2 >= 0 && tuple._2 <= 7) {
             if((gamefield.isOccupied(tuple) && !currentPlayer.hasFigure(gamefield.get(tuple))) || !gamefield.isOccupied(tuple))
               möglicheZüge.+=:(tuple)
           }
@@ -215,17 +232,27 @@ class Controller(playerA: Player, playerB: Player, gamefield: GameField) extends
         }
 
 
-        return möglicheZüge.contains(target)
+        möglicheZüge.contains(target)
       case o: Offizier => println("Du wählst einen Offizier!")
-        return true
+        true
       case d: Dame => println("Du wählst die Dame!")
-        return true
+        true
       case k: König => println("Du wählst den König!")
-        return true
+        true
 
-      case _ => return false
+      case _ => false
     }
 
+
+  }
+
+
+  /*Sry for this ugly hack but im to lazy to research other approaches ¯\_(ツ)_/¯*/
+  def setRemoteButton(btn: JButton): Unit ={
+    this.remoteButton = btn
+  }
+  def performClick(): Unit ={
+    remoteButton.doClick()
 
   }
 }

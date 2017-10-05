@@ -1,17 +1,31 @@
+import java.util.Scanner
+
 import view.{GraphicUi, TextUi}
 import controller.Controller
 import model.{GameField, Player}
-import state._
-object chess {
+import state.{NoAllowedMoveException, NoFigureException, OwnTargetException}
 
+import scala.io.StdIn._
+import util.control.Breaks._
+import scala.io.StdIn.{readInt, readLine}
+object chess {
   def loop(controller: Controller, textUi: TextUi): Unit ={
+
+    val playerA = readLine("Name for Player A: ")
+    val playerB = readLine("Name for Player B: ")
+    if(controller.playerA == null && controller.playerB == null) {
+      controller.setPlayerA(new Player(playerA))
+      controller.setPlayerB(new Player(playerB))
+      controller.performClick()
+    }
 
     textUi.draw()
 
     while (true){
-     /* print("\n Select Figure\n")
+      println("----- ROUND "+controller.round+" -----")
+      println("\n Select Figure\n")
       var x, y = scala.io.StdIn.readLine()
-      print("\n Select Target position\n")
+      println("\n Select Target position\n")
       var t_x, t_y = scala.io.StdIn.readLine()
 
 
@@ -25,9 +39,9 @@ object chess {
       else{
 
         print("put " + (x,y).toString() + " to " + (t_x, t_y).toString())
-        controller.setNextPlayer()
+        //controller.setNextPlayer()
         print("Next Round. Player ist " + controller.currentPlayer)
-      }*/
+      }
     }
 
   }
@@ -36,13 +50,8 @@ object chess {
   def main(args: Array[String]): Unit ={
     // ui, controller objects
     var gamefield: GameField = new GameField()
-    println("Please type Name Player A: ")
-    val playerA = new Player(scala.io.StdIn.readLine())
-
-    println("Please type Name Player B: ")
-    val playerB = new Player(scala.io.StdIn.readLine())
-    var controller = new Controller(new Player("sese"), new Player("sese"), gamefield)
-    var textUi: TextUi = new TextUi("playerA", "playerB", gamefield, controller)
+    var controller = new Controller(gamefield)
+    var textUi: TextUi = new TextUi(gamefield, controller)
     val graphicUi = new GraphicUi(controller, gamefield)
     loop(controller, textUi)
   }

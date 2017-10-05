@@ -6,51 +6,40 @@ import observer.Observer;
 import scala.Tuple2;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static javax.swing.SwingConstants.CENTER;
 
 
 public class GraphicUi extends JFrame implements Observer {
 
     public void update(){
+        ROUND.setText("ROUND " + controller.round());
         updateFigures();
     }
-    private static JLayeredPane gamefield;
-    private Container container;
-    private static Controller controller;
+    private JLayeredPane gamefield;
+    private Controller controller;
     private JLayeredPane lp;
-    private static GameField field;
-    private static ChessListener chesslistener;
-    private static JPanel[][] referenceBackup = new JPanel[8][8];
+    private GameField field;
+    private ChessListener chesslistener;
+    private JPanel[][] referenceBackup = new JPanel[8][8];
+    private JLabel ROUND;
 
-    private static int WHITE = 0;
-    private static int BLACK = 1;
+    private int WHITE = 0;
+    private int BLACK = 1;
 
-
-    private static JTextField txtPlayerA, txtPlayerB;
+    private  JTextField txtPlayerA, txtPlayerB;
 
     public GraphicUi(Controller controller, GameField field){
         this.controller = controller;
         this.controller.add(this);
         this.setSize(590, 620);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        container = this.getContentPane();
         this.field = field;
         lp = new JLayeredPane();
-        ActionListener btnListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                lp.setVisible(false);
-
-                System.out.println("[debug]" + txtPlayerA.getText() + ", " + txtPlayerB.getText());
-
-                draw(container);
-
-            }
-        };
-        Cover cover = new Cover(new ImageIcon(getClass().getResource("chess.jpg")).getImage());
+        Cover cover = new Cover(new ImageIcon(getClass().getResource("images/chess.jpg")).getImage());
         JLabel header= new JLabel("Chess 0.0.0");
         header.setFont(new Font("ComicSans", Font.PLAIN, 50));
         header.setBounds(200, 120 ,300,50);
@@ -63,7 +52,8 @@ public class GraphicUi extends JFrame implements Observer {
         JButton btnStart = new JButton("Start");
         btnStart.setBounds(250,300,100,50);
 
-        btnStart.addActionListener(btnListener);
+        btnStart.addActionListener(new ButtonListener(controller, this));
+        controller.setRemoteButton(btnStart);
 
         lp.add(cover, JLayeredPane.DEFAULT_LAYER);
         lp.add(header, new Integer(JLayeredPane.DEFAULT_LAYER.intValue()+1));
@@ -71,40 +61,58 @@ public class GraphicUi extends JFrame implements Observer {
         lp.add(txtPlayerB, new Integer(JLayeredPane.DEFAULT_LAYER.intValue()+1));
         lp.add(btnStart, new Integer(JLayeredPane.DEFAULT_LAYER.intValue()+1));
 
-
+        JMenuBar menu = new JMenuBar();
+        menu.add(new JMenu("Menu"));
 
         this.add(lp);
+        this.setJMenuBar(menu);
         this.setResizable(false);
         this.setVisible(true);
+    }
+
+    public JLayeredPane getLp(){return lp;}
+
+    public String[] getTxtFieldContent(){
+        return new String[]{txtPlayerA.getText(), txtPlayerB.getText()};
     }
 
 
     public  void draw(Container c){
         gamefield = new JLayeredPane();
-        JLabel currentPlayer = new JLabel("Current Player: " + controller.currentPlayer());
-        currentPlayer.setBounds(100,50,120,30);
 
-        gamefield.add(currentPlayer);
+        ROUND = new JLabel("ROUND " + controller.round());
+        ROUND.setBounds(20, 40, 150, 30);
+        ROUND.setFont(new Font("ComicScans", Font.BOLD, 30));
+        JLabel playerA = new JLabel("Player: " + controller.playerA(), CENTER);
+        playerA.setBounds(200, 40, 200, 30);
+        playerA.setBorder(BorderFactory.createBevelBorder(1));
+        JLabel playerB = new JLabel("Player: " + controller.playerB(), CENTER);
+        playerB.setBounds(200, 500, 200, 30);
+
+
+        gamefield.add(ROUND);
+        gamefield.add(playerA);
+        gamefield.add(playerB);
         chesslistener = new ChessListener(controller);
         gamefield.setLayout(null);
         gamefield.setPreferredSize(new Dimension(600,600));
         build();
         c.add(gamefield);
-
     }
 
     public  void build(){
         int ct = 0;
         int size = 50;
+        int pos = 100;
         for(int i = 0; i < field.field().length; ++i){
             for(int j = 0; j < field.field().length; ++j){
 
                 Tile beige = new Tile(255, 235, 205);
-                beige.setBounds(100+ i*size,100+j*size,size,size);
+                beige.setBounds(pos+ i*size,pos+j*size,size,size);
                 beige.addMouseListener(chesslistener);
 
                 Tile brown = new Tile(139, 69, 19);
-                brown.setBounds(100+i*size,100+j*size,size,size);
+                brown.setBounds(pos+i*size,pos+j*size,size,size);
                 brown.addMouseListener(chesslistener);
 
 
@@ -121,7 +129,7 @@ public class GraphicUi extends JFrame implements Observer {
                         bauer = new BauerTile(WHITE);
                     else
                         bauer = new BauerTile(BLACK);
-                    bauer.setBounds(100+i*size,100+j*size,size,size);
+                    bauer.setBounds(pos+i*size,pos+j*size,size,size);
                     bauer.addMouseListener(chesslistener);
                     gamefield.add(bauer, JLayeredPane.DEFAULT_LAYER.intValue());
 
@@ -134,7 +142,7 @@ public class GraphicUi extends JFrame implements Observer {
                          turm = new TurmTile(WHITE);
                     else
                          turm = new TurmTile(BLACK);
-                    turm.setBounds(100+i*size,100+j*size,size,size);
+                    turm.setBounds(pos+i*size,pos+j*size,size,size);
                     turm.addMouseListener(chesslistener);
                     gamefield.add(turm, JLayeredPane.DEFAULT_LAYER.intValue());
 
@@ -148,7 +156,7 @@ public class GraphicUi extends JFrame implements Observer {
                         läufer = new LäuferTile(WHITE);
                     else
                         läufer = new LäuferTile(BLACK);
-                    läufer.setBounds(100+i*size,100+j*size,size,size);
+                    läufer.setBounds(pos+i*size,pos+j*size,size,size);
                     läufer.addMouseListener(chesslistener);
                     gamefield.add(läufer, JLayeredPane.DEFAULT_LAYER.intValue());
 
@@ -160,7 +168,7 @@ public class GraphicUi extends JFrame implements Observer {
                         offizier= new OffizierTile(WHITE);
                     else
                         offizier= new OffizierTile(BLACK);
-                    offizier.setBounds(100+i*size,100+j*size,size,size);
+                    offizier.setBounds(pos+i*size,pos+j*size,size,size);
                     offizier.addMouseListener(chesslistener);
                     gamefield.add(offizier, JLayeredPane.DEFAULT_LAYER.intValue());
 
@@ -172,7 +180,7 @@ public class GraphicUi extends JFrame implements Observer {
                         könig = new KönigTile(WHITE);
                     else
                         könig = new KönigTile(BLACK);
-                    könig.setBounds(100+i*size,100+j*size,size,size);
+                    könig.setBounds(pos+i*size,pos+j*size,size,size);
                     könig.addMouseListener(chesslistener);
                     gamefield.add(könig, JLayeredPane.DEFAULT_LAYER.intValue());
 
@@ -184,7 +192,7 @@ public class GraphicUi extends JFrame implements Observer {
                         dame = new DameTile(WHITE);
                     else
                         dame = new DameTile(BLACK);
-                    dame.setBounds(100+i*size,100+j*size,size,size);
+                    dame.setBounds(pos+i*size,pos+j*size,size,size);
                     dame.addMouseListener(chesslistener);
                     gamefield.add(dame, JLayeredPane.DEFAULT_LAYER.intValue());
 
@@ -203,8 +211,9 @@ public class GraphicUi extends JFrame implements Observer {
     public void updateFigures(){
 
         int size = 50;
-        Tuple2<Integer, Integer> source = new Tuple2<>((int)chesslistener.source._1, (int)chesslistener.source._2);
-        Tuple2<Integer, Integer> target = new Tuple2<>((int)chesslistener.target._1, (int)chesslistener.target._2);
+        System.out.println("[debug controller] " + controller.source() + ", " + controller.target());
+        Tuple2<Integer, Integer> source = new Tuple2<>((int)controller.source()._1(), (int)controller.source()._2());
+        Tuple2<Integer, Integer> target = new Tuple2<>((int)controller.target()._1(), (int)controller.target()._2());
 
         /* debugging
         for(int i = 0; i < 8; ++i){

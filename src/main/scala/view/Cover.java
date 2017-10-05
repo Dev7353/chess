@@ -7,10 +7,6 @@ class Cover extends JPanel {
 
     private Image img;
 
-    public Cover(String img) {
-        this(new ImageIcon(img).getImage());
-    }
-
     public Cover(Image img) {
         this.img = img;
         Dimension size = new Dimension(img.getWidth(this), img.getHeight(this));
