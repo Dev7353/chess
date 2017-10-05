@@ -13,7 +13,7 @@ class Controller(gamefield: GameField) extends Observable{
 
   var source: Tuple2[Int, Int] = _
   var target: Tuple2[Int, Int] = _
-  var round: Int = 0
+  var round: Int = 1
   var remoteButton: JButton=_
   var currentPlayer: Player= _
   var enemyPlayer: Player = _
@@ -197,7 +197,7 @@ class Controller(gamefield: GameField) extends Observable{
             }
           }
 
-          print("[Turm] Mögliche Züge " + möglicheZüge)
+          println("[Turm] Mögliche Züge " + möglicheZüge)
           if(möglicheZüge.contains(target))
             true
           else false
@@ -221,7 +221,7 @@ class Controller(gamefield: GameField) extends Observable{
         )
 
         for(tuple <- coordinates){
-          println("[debug]" + tuple)
+          //println("[debug]" + tuple)
 
           if ((tuple._1 >= 0 && tuple._1 <= 7) && tuple._2 >= 0 && tuple._2 <= 7) {
             if((gamefield.isOccupied(tuple) && !currentPlayer.hasFigure(gamefield.get(tuple))) || !gamefield.isOccupied(tuple))

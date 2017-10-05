@@ -28,12 +28,12 @@ public class ButtonListener implements ActionListener {
         String playerB = graphicUi.getTxtFieldContent()[1];
 
         if(controller.currentPlayer() == null){
-            System.out.println("[debug] no player specified, create new...");
+            //System.out.println("[debug] no player specified, create new...");
             controller.setPlayerA(new Player(playerA));
         }
 
         if(controller.enemyPlayer() == null){
-            System.out.println("[debug] no player specified, create new...");
+            //System.out.println("[debug] no player specified, create new...");
             controller.setPlayerB(new Player(playerB));
         }
 

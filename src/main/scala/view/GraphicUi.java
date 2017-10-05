@@ -211,7 +211,7 @@ public class GraphicUi extends JFrame implements Observer {
     public void updateFigures(){
 
         int size = 50;
-        System.out.println("[debug controller] " + controller.source() + ", " + controller.target());
+        //System.out.println("[debug controller] " + controller.source() + ", " + controller.target());
         Tuple2<Integer, Integer> source = new Tuple2<>((int)controller.source()._1(), (int)controller.source()._2());
         Tuple2<Integer, Integer> target = new Tuple2<>((int)controller.target()._1(), (int)controller.target()._2());
 

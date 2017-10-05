@@ -11,14 +11,36 @@ import scala.io.StdIn.{readInt, readLine}
 object chess {
   def loop(controller: Controller, textUi: TextUi): Unit ={
 
-    val playerA = readLine("Name for Player A: ")
-    val playerB = readLine("Name for Player B: ")
-    if(controller.playerA == null && controller.playerB == null) {
-      controller.setPlayerA(new Player(playerA))
-      controller.setPlayerB(new Player(playerB))
-      controller.performClick()
+    val login = new Thread{
+      var flagA = false
+      var terminate = false
+      override def run(): Unit = {
+
+        val playerA = readLine("Player A: ")
+        breakable {
+          while (!flagA) {
+            if (terminate)
+              break()
+          }
+          val playerB = readLine("Player B: ")
+
+          controller.setPlayerA(new Player(playerA))
+          controller.setPlayerB(new Player(playerB))
+          controller.performClick()
+        }
+
+      }
+
+      override def destroy(): Unit = {
+
+        terminate = true
+      }
     }
 
+    login.start()
+
+    while(controller.playerA == null && controller.playerB == null){}
+    login.destroy()
     textUi.draw()
 
     while (true){
@@ -31,21 +53,20 @@ object chess {
 
       var ret = controller.putFigureTo((x.toInt,y.toInt), (t_x.toInt, t_y.toInt))
       if(ret.isInstanceOf[NoFigureException]){
-        print("You don't have such a figure!\n")
+        println("You don't have such a figure!")
       } else if(ret.isInstanceOf[NoAllowedMoveException])
-        print("You're not supposed to make this move!\n")
+        println("You're not supposed to make this move!")
       else if(ret.isInstanceOf[OwnTargetException])
-        print("You cannot kill your own figures!\n")
+        println("You cannot kill your own figures!")
       else{
 
-        print("put " + (x,y).toString() + " to " + (t_x, t_y).toString())
+        println("put " + (x,y).toString() + " to " + (t_x, t_y).toString())
         //controller.setNextPlayer()
-        print("Next Round. Player ist " + controller.currentPlayer)
+        println("Next Round. Player ist " + controller.currentPlayer)
       }
     }
 
   }
-
 
   def main(args: Array[String]): Unit ={
     // ui, controller objects
