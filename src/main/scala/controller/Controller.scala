@@ -129,6 +129,7 @@ class Controller(gamefield: GameField) extends Observable{
     this.source = source
     this.target = target
     this.round += 1
+    setNextPlayer()
     notifyObservers
     new SuccessDraw()
   }
@@ -246,7 +247,15 @@ class Controller(gamefield: GameField) extends Observable{
 
   }
 
+ def setNextPlayer(): Unit ={
+   if(currentPlayer.eq(playerA)){
+     currentPlayer = playerB
+     enemyPlayer = playerA
+   }else
+     currentPlayer = playerA
+     enemyPlayer = playerB
 
+ }
   /*Sry for this ugly hack but im to lazy to research other approaches ¯\_(ツ)_/¯*/
   def setRemoteButton(btn: JButton): Unit ={
     this.remoteButton = btn

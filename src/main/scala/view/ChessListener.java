@@ -41,7 +41,7 @@ public class ChessListener implements MouseListener {
             x = (pos.x - default_pos) / size;
             y = (pos.y - default_pos) / size;
 
-            target=  new Tuple2<>(new Integer(y), new Integer(x));
+            target=  new Tuple2<>(y, x);
 
 
             System.out.println(source + ", " + target);

@@ -61,8 +61,6 @@ object chess {
       else{
 
         println("put " + (x,y).toString() + " to " + (t_x, t_y).toString())
-        //controller.setNextPlayer()
-        println("Next Round. Player ist " + controller.currentPlayer)
       }
     }
 

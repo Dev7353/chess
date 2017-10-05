@@ -6,9 +6,7 @@ import observer.Observer;
 import scala.Tuple2;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 import static javax.swing.SwingConstants.CENTER;
 
@@ -17,6 +15,18 @@ public class GraphicUi extends JFrame implements Observer {
 
     public void update(){
         ROUND.setText("ROUND " + controller.round());
+        if(controller.currentPlayer().equals(controller.playerA())){
+            playerA.setBorder(BorderFactory.createBevelBorder(1));
+            playerA.setBackground(new Color(0, 255, 68));
+            playerB.setBorder(null);
+            playerB.setBackground(null);
+        }
+        else {
+            playerB.setBorder(BorderFactory.createBevelBorder(1));
+            playerB.setBackground(new Color(0, 255, 68));
+            playerA.setBorder(null);
+            playerA.setBackground(null);
+        }
         updateFigures();
     }
     private JLayeredPane gamefield;
@@ -25,7 +35,7 @@ public class GraphicUi extends JFrame implements Observer {
     private GameField field;
     private ChessListener chesslistener;
     private JPanel[][] referenceBackup = new JPanel[8][8];
-    private JLabel ROUND;
+    private JLabel ROUND, playerA, playerB;
 
     private int WHITE = 0;
     private int BLACK = 1;
@@ -56,7 +66,7 @@ public class GraphicUi extends JFrame implements Observer {
         controller.setRemoteButton(btnStart);
 
         lp.add(cover, JLayeredPane.DEFAULT_LAYER);
-        lp.add(header, new Integer(JLayeredPane.DEFAULT_LAYER.intValue()+1));
+        lp.add(header, new Integer(JLayeredPane.DEFAULT_LAYER+1));
         lp.add(txtPlayerA, new Integer(JLayeredPane.DEFAULT_LAYER.intValue()+1));
         lp.add(txtPlayerB, new Integer(JLayeredPane.DEFAULT_LAYER.intValue()+1));
         lp.add(btnStart, new Integer(JLayeredPane.DEFAULT_LAYER.intValue()+1));
@@ -83,11 +93,12 @@ public class GraphicUi extends JFrame implements Observer {
         ROUND = new JLabel("ROUND " + controller.round());
         ROUND.setBounds(20, 40, 150, 30);
         ROUND.setFont(new Font("ComicScans", Font.BOLD, 30));
-        JLabel playerA = new JLabel("Player: " + controller.playerA(), CENTER);
+        playerA = new JLabel("Player: " + controller.playerA(), CENTER);
         playerA.setBounds(200, 40, 200, 30);
         playerA.setBorder(BorderFactory.createBevelBorder(1));
-        JLabel playerB = new JLabel("Player: " + controller.playerB(), CENTER);
-        playerB.setBounds(200, 500, 200, 30);
+        playerA.setBackground(new Color(0, 255, 68));
+        playerB = new JLabel("Player: " + controller.playerB(), CENTER);
+        playerB.setBounds(200, 530, 200, 30);
 
 
         gamefield.add(ROUND);
@@ -208,7 +219,7 @@ public class GraphicUi extends JFrame implements Observer {
         }
     }
 
-    public void updateFigures(){
+    private void updateFigures(){
 
         int size = 50;
         //System.out.println("[debug controller] " + controller.source() + ", " + controller.target());
