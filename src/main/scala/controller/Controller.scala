@@ -268,7 +268,9 @@ class Controller(gamefield: GameField) extends Observable{
           }
         }
         else{
-          //normaler zug algo
+          if(Math.abs(target._1 -source._1) == 1||Math.abs(target._2 -source._2) == 1){
+            möglicheZüge.+=(target)
+          }
         }
 
 
