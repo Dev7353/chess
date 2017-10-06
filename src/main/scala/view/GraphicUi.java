@@ -222,21 +222,26 @@ public class GraphicUi extends JFrame implements Observer {
     private void updateFigures(){
 
         int size = 50;
-        //System.out.println("[debug controller] " + controller.source() + ", " + controller.target());
+        System.out.println("[debug controller] " + controller.source() + ", " + controller.target());
         Tuple2<Integer, Integer> source = new Tuple2<>((int)controller.source()._1(), (int)controller.source()._2());
         Tuple2<Integer, Integer> target = new Tuple2<>((int)controller.target()._1(), (int)controller.target()._2());
 
-        /* debugging
+        /*
         for(int i = 0; i < 8; ++i){
             for(int j = 0; j < 8; ++j){
 
                 System.out.println("" + i + ", " + j + ": " + referenceBackup[i][j]);
             }
-        }*/
+        }
+        */
+
 
         referenceBackup[source._1][source._2].setBounds(100+target._2*size, 100+target._1*size, size, size);
 
         //update reference backup table
+        if(referenceBackup[target._1][target._2] != null){
+            gamefield.remove(referenceBackup[target._1][target._2]); //remove figure jpanel
+        }
         referenceBackup[target._1][target._2] =  referenceBackup[source._1][source._2];
         referenceBackup[source._1][source._2] = null;
 

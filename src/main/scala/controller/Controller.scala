@@ -10,7 +10,6 @@ import util.control.Breaks._
 import scala.collection.mutable.ListBuffer
 
 class Controller(gamefield: GameField) extends Observable{
-
   var source: Tuple2[Int, Int] = _
   var target: Tuple2[Int, Int] = _
   var round: Int = 1
@@ -102,8 +101,10 @@ class Controller(gamefield: GameField) extends Observable{
     currentPlayer = enemyPlayer
     enemyPlayer = z
   }
-
   def putFigureTo(source: Tuple2[Int, Int], target: Tuple2[Int,Int]): ChessException ={
+    putFigureTo(source, target, sameRound = false)
+  }
+  def putFigureTo(source: Tuple2[Int, Int], target: Tuple2[Int,Int], sameRound: Boolean = false): ChessException ={
 
     //System.out.println("PutFigureTo debug: " + source + ", " + target);
     var current_figure = gamefield.get(source)
@@ -128,8 +129,12 @@ class Controller(gamefield: GameField) extends Observable{
 
     this.source = source
     this.target = target
-    this.round += 1
-    setNextPlayer()
+
+    if(!sameRound) {
+      //if you did i.e roschade there are 2 putInFigures calls.
+      this.round += 1
+      setNextPlayer()
+    }
     notifyObservers
     new SuccessDraw()
   }
@@ -223,7 +228,6 @@ class Controller(gamefield: GameField) extends Observable{
 
         for(tuple <- coordinates){
           //println("[debug]" + tuple)
-
           if ((tuple._1 >= 0 && tuple._1 <= 7) && tuple._2 >= 0 && tuple._2 <= 7) {
             if((gamefield.isOccupied(tuple) && !currentPlayer.hasFigure(gamefield.get(tuple))) || !gamefield.isOccupied(tuple))
               möglicheZüge.+=:(tuple)
@@ -232,14 +236,43 @@ class Controller(gamefield: GameField) extends Observable{
 
         }
 
-
         möglicheZüge.contains(target)
       case o: Offizier => println("Du wählst einen Offizier!")
         true
       case d: Dame => println("Du wählst die Dame!")
         true
       case k: König => println("Du wählst den König!")
-        true
+        //prüfe falls Zug Roschade ist
+        if(source == (0,3) && target == (0,1)){
+          if(!gamefield.isOccupied((0,1)) && !gamefield.isOccupied((0,2)) && gamefield.get((0,0)).isInstanceOf[Turm]){
+            möglicheZüge.+=:(target)
+            putFigureTo((0,0), (0,2), sameRound = true)
+          }
+
+        } else if(source == (0,3) && target == (0,6)){
+          if(!gamefield.isOccupied((0,5)) && !gamefield.isOccupied((0,6)) && gamefield.get((0,7)).isInstanceOf[Turm]){
+            möglicheZüge.+=:(target)
+            putFigureTo((0,7), (0,5), sameRound = true)
+          }
+        }
+        else if(source == (7,3) && target == (7,6)){
+          if(!gamefield.isOccupied((7,5)) && !gamefield.isOccupied((7,6)) && gamefield.get((7,7)).isInstanceOf[Turm]){
+            möglicheZüge.+=:(target)
+            putFigureTo((7,7), (7,5), sameRound = true)
+          }
+        }
+        else if(source == (7,3) && target == (7,1)){
+          if(!gamefield.isOccupied((7,1)) && !gamefield.isOccupied((7,2)) && gamefield.get((7,0)).isInstanceOf[Turm]){
+            möglicheZüge.+=:(target)
+            putFigureTo((7,0), (7,2), sameRound = true)
+          }
+        }
+        else{
+          //normaler zug algo
+        }
+
+
+        möglicheZüge.contains(target)
 
       case _ => false
     }

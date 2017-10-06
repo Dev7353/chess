@@ -30,9 +30,8 @@ public class ChessListener implements MouseListener {
             x = (pos.x - default_pos) / size;
             y = (pos.y - default_pos) / size;
 
-            source = new Tuple2<>(new Integer(y), new Integer(x));
+            source = new Tuple2<>(y, x);
             //System.out.println("Source " + x + ", " + y);
-
             hasSelectedSource = true;
             if (e.getSource().getClass().toString().contains("BauerTile"))
                 ((BauerTile) e.getSource()).repaint();
