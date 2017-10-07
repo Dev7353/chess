@@ -81,6 +81,7 @@ public class GraphicUi extends JFrame implements Observer {
     }
 
     public JLayeredPane getLp(){return lp;}
+    public JLayeredPane getGamefieldLp(){return gamefield;}
 
     public String[] getTxtFieldContent(){
         return new String[]{txtPlayerA.getText(), txtPlayerB.getText()};
@@ -104,7 +105,7 @@ public class GraphicUi extends JFrame implements Observer {
         gamefield.add(ROUND);
         gamefield.add(playerA);
         gamefield.add(playerB);
-        chesslistener = new ChessListener(controller);
+        chesslistener = new ChessListener(controller, this);
         gamefield.setLayout(null);
         gamefield.setPreferredSize(new Dimension(600,600));
         build();
@@ -222,7 +223,6 @@ public class GraphicUi extends JFrame implements Observer {
     private void updateFigures(){
 
         int size = 50;
-        System.out.println("[debug controller] " + controller.source() + ", " + controller.target());
         Tuple2<Integer, Integer> source = new Tuple2<>((int)controller.source()._1(), (int)controller.source()._2());
         Tuple2<Integer, Integer> target = new Tuple2<>((int)controller.target()._1(), (int)controller.target()._2());
 

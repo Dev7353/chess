@@ -105,8 +105,6 @@ class Controller(gamefield: GameField) extends Observable{
     putFigureTo(source, target, sameRound = false)
   }
   def putFigureTo(source: Tuple2[Int, Int], target: Tuple2[Int,Int], sameRound: Boolean = false): ChessException ={
-
-    //System.out.println("PutFigureTo debug: " + source + ", " + target);
     var current_figure = gamefield.get(source)
     if(!currentPlayer.hasFigure(current_figure)){
       return new NoFigureException()
@@ -141,76 +139,85 @@ class Controller(gamefield: GameField) extends Observable{
 
 
   def moveIsAllowed(source: Tuple2[Int, Int], target: Tuple2[Int, Int]): Boolean ={
-    var source_figure = gamefield.get(source)
+    var möglicheZüge:ListBuffer[Tuple2[Int, Int]] = getPossibleMoves(source)
+    möglicheZüge.contains(target)
+  }
+
+ def setNextPlayer(): Unit ={
+   if(currentPlayer.eq(playerA)){
+     currentPlayer = playerB
+     enemyPlayer = playerA
+   }else
+     currentPlayer = playerA
+     enemyPlayer = playerB
+
+ }
+
+  def getFigure(coord: Tuple2[Int, Int]): Figure ={
+
+    gamefield.get(coord)
+  }
+
+  def getPossibleMoves(source: Tuple2[Int, Int]): ListBuffer[Tuple2[Int, Int]] ={
     var möglicheZüge = ListBuffer.empty[Tuple2[Int, Int]]
+    val source_figure = gamefield.get(source)
     source_figure match {
-      case b: Bauer => println("Du wählst einen Bauer du Bauer!")
-        true
-      case t: Turm => println("Du wählst einen Turm!")
-        //wenn Ziel nicht mit x oder y Wert übereinstimmt, kann nicht horizontal bzw vertikal gelaufen werden
-        if(source._1 == target._1 || source._2 == target._2){
+      case b: Bauer => möglicheZüge
+      case t: Turm =>
+        breakable {
+          for (n <- source._2+1 to 7) {
+            if (gamefield.isOccupied((source._1, n)) && currentPlayer.hasFigure(gamefield.get(target)))
+              break()
+            else if(gamefield.isOccupied((source._1, n)) && !currentPlayer.hasFigure(gamefield.get(target))){
+              möglicheZüge.+=((source._1, n))
+              break()
+            } else
+              möglicheZüge.+=((source._1, n))
 
-
-          //horizontal
-          breakable {
-            for (n <- source._2+1 to 7) {
-              if (gamefield.isOccupied((source._1, n)) && currentPlayer.hasFigure(gamefield.get(target)))
-                break()
-              else if(gamefield.isOccupied((source._1, n)) && !currentPlayer.hasFigure(gamefield.get(target))){
-                möglicheZüge.+=((source._1, n))
-                break()
-              } else
-                möglicheZüge.+=((source._1, n))
-
-            }
           }
-          breakable {
-            for (n <- source._2-1 to 0 by -1) {
-              if (gamefield.isOccupied((source._1, n)) && currentPlayer.hasFigure(gamefield.get(target)))
-                break()
-              else if(gamefield.isOccupied((source._1, n)) && !currentPlayer.hasFigure(gamefield.get(target))){
-                möglicheZüge.+=((source._1, n))
-                break()
-              } else
-                möglicheZüge.+=((source._1, n))
-
-            }
-          }
-
-          //vertikal
-          breakable {
-            for (n <- source._1+1 to 7) {
-              if (gamefield.isOccupied((n, source._2)) && currentPlayer.hasFigure(gamefield.get(target)))
-                break()
-              else if(gamefield.isOccupied((n, source._2)) && !currentPlayer.hasFigure(gamefield.get(target))){
-                möglicheZüge.+=((n, source._2))
-                break()
-              } else
-                möglicheZüge.+=((n, source._2))
-
-            }
-          }
-          breakable {
-            for (n <- source._1-1 to 0 by -1) {
-              if (gamefield.isOccupied((n, source._2)) && currentPlayer.hasFigure(gamefield.get(target)))
-                break()
-              else if(gamefield.isOccupied((n, source._2)) && !currentPlayer.hasFigure(gamefield.get(target))){
-                möglicheZüge.+=((n, source._2))
-                break()
-              } else
-                möglicheZüge.+=((n, source._2))
-
-            }
-          }
-
-          println("[Turm] Mögliche Züge " + möglicheZüge)
-          if(möglicheZüge.contains(target))
-            true
-          else false
         }
-        else false
+        breakable {
+          for (n <- source._2-1 to 0 by -1) {
+            if (gamefield.isOccupied((source._1, n)) && currentPlayer.hasFigure(gamefield.get(target)))
+              break()
+            else if(gamefield.isOccupied((source._1, n)) && !currentPlayer.hasFigure(gamefield.get(target))){
+              möglicheZüge.+=((source._1, n))
+              break()
+            } else
+              möglicheZüge.+=((source._1, n))
 
-      case l: Läufer => println("Du wählst einen Läufer!")
+          }
+        }
+
+        //vertikal
+        breakable {
+          for (n <- source._1+1 to 7) {
+            if (gamefield.isOccupied((n, source._2)) && currentPlayer.hasFigure(gamefield.get(target)))
+              break()
+            else if(gamefield.isOccupied((n, source._2)) && !currentPlayer.hasFigure(gamefield.get(target))){
+              möglicheZüge.+=((n, source._2))
+              break()
+            } else
+              möglicheZüge.+=((n, source._2))
+
+          }
+        }
+        breakable {
+          for (n <- source._1-1 to 0 by -1) {
+            if (gamefield.isOccupied((n, source._2)) && currentPlayer.hasFigure(gamefield.get(target)))
+              break()
+            else if(gamefield.isOccupied((n, source._2)) && !currentPlayer.hasFigure(gamefield.get(target))){
+              möglicheZüge.+=((n, source._2))
+              break()
+            } else
+              möglicheZüge.+=((n, source._2))
+
+          }
+        }
+        return möglicheZüge
+
+
+      case l: Läufer =>
         var oben: Tuple2[Int, Int] = (source._1-1, source._2+2)
         var unten: Tuple2[Int, Int] = (source._1+1, source._2+2)
         möglicheZüge.+=:(oben).+=:(unten)
@@ -227,7 +234,6 @@ class Controller(gamefield: GameField) extends Observable{
         )
 
         for(tuple <- coordinates){
-          //println("[debug]" + tuple)
           if ((tuple._1 >= 0 && tuple._1 <= 7) && tuple._2 >= 0 && tuple._2 <= 7) {
             if((gamefield.isOccupied(tuple) && !currentPlayer.hasFigure(gamefield.get(tuple))) || !gamefield.isOccupied(tuple))
               möglicheZüge.+=:(tuple)
@@ -235,12 +241,8 @@ class Controller(gamefield: GameField) extends Observable{
 
 
         }
-
-        möglicheZüge.contains(target)
       case o: Offizier => println("Du wählst einen Offizier!")
-        true
       case d: Dame => println("Du wählst die Dame!")
-        true
       case k: König => println("Du wählst den König!")
         //prüfe falls Zug Roschade ist
         if(source == (0,3) && target == (0,1)){
@@ -274,23 +276,12 @@ class Controller(gamefield: GameField) extends Observable{
         }
 
 
-        möglicheZüge.contains(target)
-
-      case _ => false
+      case _ => null
     }
 
-
+    möglicheZüge
   }
 
- def setNextPlayer(): Unit ={
-   if(currentPlayer.eq(playerA)){
-     currentPlayer = playerB
-     enemyPlayer = playerA
-   }else
-     currentPlayer = playerA
-     enemyPlayer = playerB
-
- }
   /*Sry for this ugly hack but im to lazy to research other approaches ¯\_(ツ)_/¯*/
   def setRemoteButton(btn: JButton): Unit ={
     this.remoteButton = btn

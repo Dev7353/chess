@@ -2,8 +2,6 @@ package model
 import scala.collection.mutable.ListBuffer
 
 class Player(name:String) {
-
-  //var figures:LinkedList[Figure] = new java.util.LinkedList[Figure]()
   var figures = ListBuffer.empty[Figure]
   var killed = ListBuffer.empty[Figure]
   def addFigure(figure:Figure): Unit ={
