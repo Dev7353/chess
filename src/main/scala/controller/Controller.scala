@@ -36,7 +36,7 @@ class Controller(gamefield: GameField) extends Observable{
     gamefield.set((0,4), new Dame())
     // end
     for( p <- 0 to 7){
-      gamefield.set((1,p), new Bauer((1,p)))
+      gamefield.set((1,p), new Bauer((1,p), "UP"))
     }
 
     gamefield.set((7,0), new Turm())
@@ -48,7 +48,7 @@ class Controller(gamefield: GameField) extends Observable{
     gamefield.set((7,3), new König())
     gamefield.set((7,4), new Dame())
     for( p <- 0 to 7){
-      gamefield.set((6,p), new Bauer((6,p)))
+      gamefield.set((6,p), new Bauer((6,p), "DOWN"))
     }
   }
 
@@ -162,7 +162,39 @@ class Controller(gamefield: GameField) extends Observable{
     var möglicheZüge = ListBuffer.empty[Tuple2[Int, Int]]
     val source_figure = gamefield.get(source)
     source_figure match {
-      case b: Bauer => möglicheZüge
+      case b: Bauer =>
+        if(b.getDirection() == "UP"){
+          val up = (source._1+1, source._2)
+          val left = (source._1+1, source._2-1)
+          val right = (source._1+1, source._2+1)
+          val firstDraw = (source._1+2, source._2)
+
+          if(!currentPlayer.hasFigure(gamefield.get(up)))
+              möglicheZüge.+=(up)
+          if(enemyPlayer.hasFigure(gamefield.get(left)))
+              möglicheZüge.+=(left)
+          if(enemyPlayer.hasFigure(gamefield.get(right)))
+            möglicheZüge.+=(right)
+
+          if(source._1 == 1 && !currentPlayer.hasFigure(gamefield.get(firstDraw)))
+            möglicheZüge.+=:(firstDraw)
+
+        }else if(b.getDirection() == "DOWN"){
+          val up = (source._1-1, source._2)
+          val left = (source._1-1, source._2-1)
+          val right = (source._1-1, source._2+1)
+          val firstDraw = (source._1-2, source._2)
+
+          if(!currentPlayer.hasFigure(gamefield.get(up)))
+            möglicheZüge.+=(up)
+          else if(enemyPlayer.hasFigure(gamefield.get(left)))
+            möglicheZüge.+=(left)
+          else if(enemyPlayer.hasFigure(gamefield.get(right)))
+            möglicheZüge.+=(right)
+
+          if(source._1 == 6 && !currentPlayer.hasFigure(gamefield.get(firstDraw)))
+            möglicheZüge.+=:(firstDraw)
+        }
       case t: Turm =>
         breakable {
           for (n <- source._2+1 to 7) {
