@@ -247,4 +247,7 @@ public class GraphicUi extends JFrame implements Observer {
 
     }
 
+    public JPanel[][] getReferenceBackup() {
+        return referenceBackup;
+    }
 }

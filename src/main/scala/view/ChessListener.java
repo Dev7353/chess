@@ -54,13 +54,22 @@ public class ChessListener implements MouseListener {
                 if(controller.currentPlayer().hasFigure(controller.getFigure(zug)))
                     continue;
 
+                if(controller.enemyPlayer().hasFigure(controller.getFigure(zug))) {
+                    graphicUi.getReferenceBackup()[posy][posx].setBackground(new Color(255,255,0));
+                    graphicUi.getReferenceBackup()[posy][posx].updateUI();
+                    graphicUi.getReferenceBackup()[posy][posx].setOpaque(true);
+                    continue;
+                }
+
                 JPanel panel = new JPanel();
                 panel.setBounds(100+50*posx, 100+50*posy, 50,50);
                 panel.setBackground(new Color(255, 255, 0));
+                panel.setBorder(BorderFactory.createBevelBorder(1));
                 möglicheZüge.add(panel);
                 graphicUi.getGamefieldLp().add(panel, 10);
             }
-            graphicUi.getLp().revalidate();
+
+            graphicUi.getGamefieldLp().revalidate();
         }else{
             for(JPanel zug: möglicheZüge){
                 graphicUi.getGamefieldLp().remove(zug);

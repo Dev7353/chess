@@ -144,13 +144,14 @@ class Controller(gamefield: GameField) extends Observable{
   }
 
  def setNextPlayer(): Unit ={
-   if(currentPlayer.eq(playerA)){
-     currentPlayer = playerB
+   if(currentPlayer.equals(playerA)){
      enemyPlayer = playerA
-   }else
-     currentPlayer = playerA
-     enemyPlayer = playerB
+     currentPlayer = playerB
 
+   }else {
+     enemyPlayer = playerB
+     currentPlayer = playerA
+   }
  }
 
   def getFigure(coord: Tuple2[Int, Int]): Figure ={
@@ -169,28 +170,21 @@ class Controller(gamefield: GameField) extends Observable{
           val right = (source._1+1, source._2+1)
           val firstDraw = (source._1+2, source._2)
 
-          if(!currentPlayer.hasFigure(gamefield.get(up)))
-              möglicheZüge.+=(up)
-          if(enemyPlayer.hasFigure(gamefield.get(left)))
-              möglicheZüge.+=(left)
-          if(enemyPlayer.hasFigure(gamefield.get(right)))
-            möglicheZüge.+=(right)
+         checkBauerZuege(möglicheZüge, up, right, left)
 
           if(source._1 == 1 && !currentPlayer.hasFigure(gamefield.get(firstDraw)))
             möglicheZüge.+=:(firstDraw)
 
         }else if(b.getDirection() == "DOWN"){
+          println("bauer gets down")
+          println(this.currentPlayer)
+          println(this.enemyPlayer)
           val up = (source._1-1, source._2)
           val left = (source._1-1, source._2-1)
           val right = (source._1-1, source._2+1)
           val firstDraw = (source._1-2, source._2)
 
-          if(!currentPlayer.hasFigure(gamefield.get(up)))
-            möglicheZüge.+=(up)
-          else if(enemyPlayer.hasFigure(gamefield.get(left)))
-            möglicheZüge.+=(left)
-          else if(enemyPlayer.hasFigure(gamefield.get(right)))
-            möglicheZüge.+=(right)
+          checkBauerZuege(möglicheZüge, up, right, left)
 
           if(source._1 == 6 && !currentPlayer.hasFigure(gamefield.get(firstDraw)))
             möglicheZüge.+=:(firstDraw)
@@ -312,6 +306,15 @@ class Controller(gamefield: GameField) extends Observable{
     }
 
     möglicheZüge
+  }
+
+  def checkBauerZuege(möglicheZüge: ListBuffer[Tuple2[Int, Int]], up: Tuple2[Int, Int], right: Tuple2[Int, Int], left: Tuple2[Int, Int]):Unit={
+    if((up._1 >= 0 && up._1 < 8) && (up._2 >=0 && up._2 < 8) && !currentPlayer.hasFigure(gamefield.get(up)))
+      möglicheZüge.+=(up)
+    if((left._1 >= 0 && left._1 < 8) && (left._2 >=0 && left._2 < 8) &&enemyPlayer.hasFigure(gamefield.get(left)))
+      möglicheZüge.+=(left)
+    if((right._1 >= 0 && right._1 < 8) && (right._2 >=0 && right._2 < 8) &&enemyPlayer.hasFigure(gamefield.get(right)))
+      möglicheZüge.+=(right)
   }
 
   /*Sry for this ugly hack but im to lazy to research other approaches ¯\_(ツ)_/¯*/
