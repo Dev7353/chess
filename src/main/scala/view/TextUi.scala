@@ -9,6 +9,19 @@ class TextUi(field: GameField, controller: Controller) extends Observer{
   controller.add(this)
   def update = draw
 
+
+  def toHtml(): String={
+    val sb = new StringBuilder()
+
+    sb.++=("Player: " + controller.currentPlayer + "<br>")
+    sb.++=(field.toString + "<br>")
+    sb.++=("0 &nbsp; 1 &nbsp; 2  &nbsp;3 &nbsp; 4 &nbsp; 5 &nbsp; 6 &nbsp;7<br>")
+    sb.++=("Player: " + controller.enemyPlayer + "<br>")
+
+    sb.toString()
+
+  }
+
   def draw(): Unit ={
 
     print("Player: " + controller.currentPlayer + "\n")
