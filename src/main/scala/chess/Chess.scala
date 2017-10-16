@@ -1,20 +1,25 @@
-import java.util.Scanner
+package chess
 
-import view.{GraphicUi, TextUi}
 import controller.Controller
 import model.{GameField, Player}
 import state.{NoAllowedMoveException, NoFigureException, OwnTargetException}
+import view.{GraphicUi, TextUi}
 
-import scala.io.StdIn._
-import util.control.Breaks._
-import scala.io.StdIn.{readInt, readLine}
-object chess {
-  def loop(controller: Controller, textUi: TextUi): Unit ={
+import scala.io.StdIn.readLine
+import scala.util.control.Breaks.{break, breakable}
+
+class Chess {
+  var gamefield: GameField = new GameField()
+  var controller = new Controller(gamefield)
+  var textUi: TextUi = new TextUi(gamefield, controller)
+  val graphicUi = new GraphicUi(controller, gamefield)
+
+  def loop(): Unit ={
 
     val login = new Thread{
-      var flagA = false
-      var terminate = false
-      override def run(): Unit = {
+    var flagA = false
+    var terminate = false
+    override def run(): Unit = {
 
         val playerA = readLine("Player A: ")
         breakable {
@@ -66,12 +71,4 @@ object chess {
 
   }
 
-  def main(args: Array[String]): Unit ={
-    // ui, controller objects
-    var gamefield: GameField = new GameField()
-    var controller = new Controller(gamefield)
-    var textUi: TextUi = new TextUi(gamefield, controller)
-    val graphicUi = new GraphicUi(controller, gamefield)
-    loop(controller, textUi)
-  }
 }

@@ -6,28 +6,35 @@ import observer.Observer
 
 class TextUi(field: GameField, controller: Controller) extends Observer{
 
+  val TAB: String = "\t"
+  val NEWLINE: String = "\n"
+
   controller.add(this)
   def update = draw
 
 
   def toHtml(): String={
-    val sb = new StringBuilder()
 
-    sb.++=("Player: " + controller.currentPlayer + "<br>")
-    sb.++=(field.toString + "<br>")
-    sb.++=("0 &nbsp; 1 &nbsp; 2  &nbsp;3 &nbsp; 4 &nbsp; 5 &nbsp; 6 &nbsp;7<br>")
-    sb.++=("Player: " + controller.enemyPlayer + "<br>")
 
-    sb.toString()
+    var html: String = getTuiString()
+
+    html = html.replace(NEWLINE, "<br>")
+    html = html.replace(TAB, "&nbsp; ")
+
+    html
 
   }
 
   def draw(): Unit ={
+    print(getTuiString())
+  }
+  def getTuiString(): String ={
+    val sb = new StringBuilder()
+    sb.++=("Player: " + controller.currentPlayer + NEWLINE)
+    sb.++=(field.toString + NEWLINE)
+    sb.++=("0"+TAB+"1"+TAB+"2"+TAB+"3"+TAB+"4"+TAB+"5"+TAB+"6"+TAB+"7" + NEWLINE)
+    sb.++=("Player: " + controller.enemyPlayer + NEWLINE)
 
-    print("Player: " + controller.currentPlayer + "\n")
-    print(field.toString + "\n")
-    print("0\t1\t2\t3\t4\t5\t6\t7\n")
-    print("Player: " + controller.enemyPlayer + "\n")
-
+    sb.toString()
   }
 }
