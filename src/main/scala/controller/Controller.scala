@@ -240,7 +240,6 @@ class Controller(gamefield: GameField) extends Observable{
 
           }
         }
-        return möglicheZüge
 
 
       case l: Läufer =>
@@ -267,7 +266,67 @@ class Controller(gamefield: GameField) extends Observable{
 
 
         }
-      case o: Offizier => println("Du wählst einen Offizier!")
+      case o: Offizier =>
+        breakable{
+          for(i <- 1 to 7){
+            val t = (source._1+i, source._2+i)
+            if(t._1 > 7||t._1 < 0||t._2 > 7||t._2 < 0)
+              break()
+            if(!gamefield.isOccupied(t))
+              möglicheZüge+=(t)
+            else if(enemyPlayer.hasFigure(gamefield.get(t))){
+              möglicheZüge.+=(t)
+              break()
+            }else
+              break()
+          }
+        }
+
+        breakable{
+          for(i <- 1 to 7){
+            val t = (source._1+i, source._2-i)
+            if(t._1 > 7||t._1 < 0||t._2 > 7||t._2 < 0)
+              break()
+            if(!gamefield.isOccupied(t))
+              möglicheZüge+=(t)
+            else if(enemyPlayer.hasFigure(gamefield.get(t))){
+              möglicheZüge.+=(t)
+              break()
+            }else
+              break()
+          }
+        }
+
+        breakable{
+          for(i <- 1 to 7){
+            val t = (source._1-i, source._2+i)
+            if(t._1 > 7||t._1 < 0||t._2 > 7||t._2 < 0)
+              break()
+            if(!gamefield.isOccupied(t))
+              möglicheZüge+=(t)
+            else if(enemyPlayer.hasFigure(gamefield.get(t))){
+              möglicheZüge.+=(t)
+              break()
+            }else
+              break()
+          }
+        }
+
+        breakable{
+          for(i <- 1 to 7){
+            val t = (source._1-i, source._2-i)
+            if(t._1 > 7||t._1 < 0||t._2 > 7||t._2 < 0)
+              break()
+            if(!gamefield.isOccupied(t))
+              möglicheZüge+=(t)
+            else if(enemyPlayer.hasFigure(gamefield.get(t))){
+              möglicheZüge.+=(t)
+              break()
+            }else
+              break()
+          }
+        }
+
       case d: Dame => println("Du wählst die Dame!")
       case k: König => println("Du wählst den König!")
         //prüfe falls Zug Roschade ist
