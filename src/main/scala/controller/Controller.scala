@@ -384,4 +384,30 @@ class Controller(gamefield: GameField) extends Observable{
     remoteButton.doClick()
 
   }
+
+  def webUi(): String={
+    val sb = new StringBuilder()
+    var ct = 0
+    sb.append("<div class='gamefield'>")
+    for(i <- 0 to gamefield.field.length){
+      for(j <- 0 to gamefield.field.length){
+
+        if(ct%2 == 0){
+          sb.append("<div class='tileWhite'></div>")
+        }else{
+          sb.append("<div class='tileBrown'></div>")
+        }
+
+        if (j == 7) {
+          ct += 2
+        }
+        else {
+          ct += 1
+        }
+      }
+    }
+    sb.append("</div>")
+
+    sb.toString()
+  }
 }
