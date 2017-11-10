@@ -20,6 +20,10 @@ class Controller(gamefield: GameField) extends Observable{
   var playerB: Player = _
   initializeField()
 
+
+  def getGamefield(): GameField ={
+    this.gamefield
+  }
   def initializeField(): Unit ={
     for(x <- 2 to 5){
       for(y <- 0 to 7){
