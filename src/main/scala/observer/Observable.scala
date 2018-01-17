@@ -1,7 +1,7 @@
 package observer
 
 trait Observer {
-  def update
+  def update()
 }
 class Observable {
   var subscribers: Vector[Observer] = Vector()
