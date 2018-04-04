@@ -20,10 +20,6 @@ class Controller(gamefield: GameField) extends Observable{
   var playerB: Player = _
   initializeField()
 
-
-  def getGamefield(): GameField ={
-    this.gamefield
-  }
   def initializeField(): Unit ={
     for(x <- 2 to 5){
       for(y <- 0 to 7){
@@ -59,43 +55,18 @@ class Controller(gamefield: GameField) extends Observable{
   def setPlayerA(player:Player): Unit ={
    playerA = player
     currentPlayer = playerA
-    playerA.addFigure(gamefield.get((0,0)))
-    playerA.addFigure(gamefield.get((0,7)))
-    playerA.addFigure(gamefield.get((0,1)))
-    playerA.addFigure(gamefield.get((0,6)))
-    playerA.addFigure(gamefield.get((0,2)))
-    playerA.addFigure(gamefield.get((0,5)))
-    playerA.addFigure(gamefield.get((0,3)))
-    playerA.addFigure(gamefield.get((0,4)))
-    playerA.addFigure(gamefield.get((1,0)))
-    playerA.addFigure(gamefield.get((1,1)))
-    playerA.addFigure(gamefield.get((1,2)))
-    playerA.addFigure(gamefield.get((1,3)))
-    playerA.addFigure(gamefield.get((1,4)))
-    playerA.addFigure(gamefield.get((1,5)))
-    playerA.addFigure(gamefield.get((1,6)))
-    playerA.addFigure(gamefield.get((1,7)))
+
+    for(i <- 0 to 1; j <- 0 to 7){
+      playerA.addFigure(gamefield.get((i,j)))
+    }
   }
 
   def setPlayerB(player:Player): Unit ={
     playerB = player
     enemyPlayer = playerB
-    playerB.addFigure(gamefield.get((7,0)))
-    playerB.addFigure(gamefield.get((7,7)))
-    playerB.addFigure(gamefield.get((7,1)))
-    playerB.addFigure(gamefield.get((7,6)))
-    playerB.addFigure(gamefield.get((7,2)))
-    playerB.addFigure(gamefield.get((7,5)))
-    playerB.addFigure(gamefield.get((7,3)))
-    playerB.addFigure(gamefield.get((7,4)))
-    playerB.addFigure(gamefield.get((6,0)))
-    playerB.addFigure(gamefield.get((6,1)))
-    playerB.addFigure(gamefield.get((6,2)))
-    playerB.addFigure(gamefield.get((6,3)))
-    playerB.addFigure(gamefield.get((6,4)))
-    playerB.addFigure(gamefield.get((6,5)))
-    playerB.addFigure(gamefield.get((6,6)))
-    playerB.addFigure(gamefield.get((6,7)))
+    for(i <- 6 to 7; j <- 0 to 7){
+      playerB.addFigure(gamefield.get((i,j)))
+    }
   }
 
 
@@ -387,31 +358,5 @@ class Controller(gamefield: GameField) extends Observable{
   def performClick(): Unit ={
     remoteButton.doClick()
 
-  }
-
-  def webUi(): String={
-    val sb = new StringBuilder()
-    var ct = 0
-    sb.append("<div class='gamefield'>")
-    for(i <- 0 to gamefield.field.length){
-      for(j <- 0 to gamefield.field.length){
-
-        if(ct%2 == 0){
-          sb.append("<div class='tileWhite'></div>")
-        }else{
-          sb.append("<div class='tileBrown'></div>")
-        }
-
-        if (j == 7) {
-          ct += 2
-        }
-        else {
-          ct += 1
-        }
-      }
-    }
-    sb.append("</div>")
-
-    sb.toString()
   }
 }

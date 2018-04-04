@@ -12,7 +12,7 @@ class Chess {
   var gamefield: GameField = new GameField()
   var controller = new Controller(gamefield)
   var textUi: TextUi = new TextUi(gamefield, controller)
-  //val graphicUi = new GraphicUi(controller, gamefield)
+  val graphicUi = new GraphicUi(controller, gamefield)
 
   def loop(): Unit ={
 
