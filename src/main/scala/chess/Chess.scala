@@ -3,7 +3,7 @@ package chess
 import controller.Controller
 import model.{GameField, Player}
 import state.{NoAllowedMoveException, NoFigureException, OwnTargetException}
-import view.{GraphicUi, TextUi}
+import view.{GraphicUi, TextUi, ViewWebService}
 
 import scala.io.StdIn.readLine
 import scala.util.control.Breaks.{break, breakable}
@@ -13,6 +13,7 @@ class Chess {
   var controller = new Controller(gamefield)
   var textUi: TextUi = new TextUi(gamefield, controller)
   val graphicUi = new GraphicUi(controller, gamefield)
+  val viewWebservice = new ViewWebService()
 
   def loop(): Unit ={
 
