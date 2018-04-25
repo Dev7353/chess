@@ -10,7 +10,6 @@ import java.awt.*;
 
 import static javax.swing.SwingConstants.CENTER;
 
-
 public class GraphicUi extends JFrame implements Observer {
 
     public void update(){
@@ -29,6 +28,7 @@ public class GraphicUi extends JFrame implements Observer {
         }
         updateFigures();
     }
+
     private JLayeredPane gamefield;
     private Controller controller;
     private JLayeredPane lp;
@@ -90,7 +90,6 @@ public class GraphicUi extends JFrame implements Observer {
 
     public  void draw(Container c){
         gamefield = new JLayeredPane();
-
         ROUND = new JLabel("ROUND " + controller.round());
         ROUND.setBounds(20, 40, 150, 30);
         ROUND.setFont(new Font("ComicScans", Font.BOLD, 30));
