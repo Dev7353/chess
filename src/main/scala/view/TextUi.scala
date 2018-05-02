@@ -3,14 +3,16 @@ package view
 import controller.Controller
 import model.GameField
 import observer.Observer
-
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
+import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 
-import scala.concurrent.Future
-import scala.util.{ Failure, Success }
+
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
+import scala.util.{Failure, Success}
 
 class TextUi(field: GameField, controller: Controller) extends Observer{
 
@@ -42,18 +44,24 @@ class TextUi(field: GameField, controller: Controller) extends Observer{
     implicit val materializer = ActorMaterializer()
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext = system.dispatcher
-    val round: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = "http://localhost:8080/controller/round"))
 
-    round
-      .onComplete {
-        case Success(res) => println(res)
-        case Failure(_) => sys.error("something wrong")
-      }
+    val getRound: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = "http://localhost:8080/controller/round"))
+    val getCurrentPlayer: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = "http://localhost:8080/controller/currentPlayer"))
+    val getEnemyPlayer: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = "http://localhost:8080/controller/enemyPlayer"))
+
+    Await.result(getRound, Duration.Inf)
+    Await.result(getCurrentPlayer, Duration.Inf)
+    Await.result(getEnemyPlayer, Duration.Inf)
+  
+    val round = Unmarshal(getRound.value.get.get.entity).to[String].value.get.get.toInt
+    val currentPlayer = Unmarshal(getCurrentPlayer.value.get.get.entity).to[String].value.get.get.toString
+    val enemyPlayer = Unmarshal(getEnemyPlayer.value.get.get.entity).to[String].value.get.get.toString
+
     sb.++=("Round: " + round + NEWLINE)
-    sb.++=("Player: " + controller.currentPlayer + NEWLINE)
+    sb.++=("Player: " + currentPlayer + NEWLINE)
     sb.++=(field.toString + NEWLINE)
     sb.++=("0"+TAB+"1"+TAB+"2"+TAB+"3"+TAB+"4"+TAB+"5"+TAB+"6"+TAB+"7" + NEWLINE)
-    sb.++=("Player: " + controller.enemyPlayer + NEWLINE)
+    sb.++=("Player: " + enemyPlayer + NEWLINE)
 
     sb.toString()
   }

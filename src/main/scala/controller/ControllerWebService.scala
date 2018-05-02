@@ -19,25 +19,19 @@ class ControllerWebService(c: Controller) {
   val route =
     path("controller" / "round") {
       get {
-        complete(200 -> "test")
+        complete(200->c.round.toString())
       }
     }
 
-  path("controller" / "currentplayer") {
+  path("controller" / "currentPlayer") {
     get {
-      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
+      complete(200->"yolo")
     }
   }
 
-  path("controller" / "playerA") {
+  path("controller" / "enemyPlayer") {
     get {
-      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
-    }
-  }
-
-  path("controller" / "playerB") {
-    get {
-      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
+      complete(200->c.enemyPlayer.toString)
     }
   }
 
