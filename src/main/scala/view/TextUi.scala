@@ -14,12 +14,12 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.util.{Failure, Success}
 
-class TextUi(field: GameField, controller: Controller) extends Observer{
+class TextUi() extends Observer{
 
   val TAB: String = "\t"
   val NEWLINE: String = "\n"
 
-  controller.add(this)
+  //controller.add(this)
   def update = draw
 
 
@@ -48,18 +48,21 @@ class TextUi(field: GameField, controller: Controller) extends Observer{
     val getRound: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = "http://localhost:8080/controller/round"))
     val getCurrentPlayer: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = "http://localhost:8080/controller/currentPlayer"))
     val getEnemyPlayer: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = "http://localhost:8080/controller/enemyPlayer"))
+    val getGamefield: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = "http://localhost:8080/controller/gamefield"))
 
     Await.result(getRound, Duration.Inf)
     Await.result(getCurrentPlayer, Duration.Inf)
     Await.result(getEnemyPlayer, Duration.Inf)
-  
+    Await.result(getGamefield, Duration.Inf)
+
     val round = Unmarshal(getRound.value.get.get.entity).to[String].value.get.get.toInt
     val currentPlayer = Unmarshal(getCurrentPlayer.value.get.get.entity).to[String].value.get.get.toString
     val enemyPlayer = Unmarshal(getEnemyPlayer.value.get.get.entity).to[String].value.get.get.toString
+    val gamefield = Unmarshal(getGamefield.value.get.get.entity).to[String].value.get.get.toString
 
     sb.++=("Round: " + round + NEWLINE)
     sb.++=("Player: " + currentPlayer + NEWLINE)
-    sb.++=(field.toString + NEWLINE)
+    sb.++=(gamefield.toString + NEWLINE)
     sb.++=("0"+TAB+"1"+TAB+"2"+TAB+"3"+TAB+"4"+TAB+"5"+TAB+"6"+TAB+"7" + NEWLINE)
     sb.++=("Player: " + enemyPlayer + NEWLINE)
 

@@ -9,11 +9,10 @@ import scala.io.StdIn.readLine
 import scala.util.control.Breaks.{break, breakable}
 
 class Chess {
-  var gamefield: GameField = new GameField()
-  var controller = new Controller(gamefield)
-  var textUi: TextUi = new TextUi(gamefield, controller)
-  val graphicUi = new GraphicUi(controller, gamefield)
-  val controllerWebservice = new ControllerWebService(controller)
+  var controller = new Controller()
+  var textUi: TextUi = new TextUi()
+  //val graphicUi = new GraphicUi(controller, gamefield)
+
 
   def loop(): Unit ={
 

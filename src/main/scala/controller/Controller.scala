@@ -9,7 +9,7 @@ import observer.Observable
 import util.control.Breaks._
 import scala.collection.mutable.ListBuffer
 
-class Controller(gamefield: GameField) extends Observable{
+class Controller() extends Observable{
   var source: Tuple2[Int, Int] = _
   var target: Tuple2[Int, Int] = _
   var round: Int = 1
@@ -18,8 +18,8 @@ class Controller(gamefield: GameField) extends Observable{
   var enemyPlayer: Player = _
   var playerA: Player = _
   var playerB: Player = _
+  var gamefield = new GameField()
   initializeField()
-
   def initializeField(): Unit ={
     for(x <- 2 to 5){
       for(y <- 0 to 7){
