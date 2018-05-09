@@ -16,37 +16,25 @@ class ControllerWebService(c: Controller) {
   // needed for the future flatMap/onComplete in the end
   implicit val executionContext = system.dispatcher
 
-  val route =
-    path("controller" / "round") {
-      get {
-        complete(200->c.round.toString())
-      }
-    }
-
-  path("controller" / "currentPlayer") {
-    get {
-      complete(200->"yolo")
-    }
-  }
-
-  path("controller" / "enemyPlayer") {
-    get {
-      complete(200->c.enemyPlayer.toString)
-    }
-  }
-
-  path("controller" / "source") {
-    get {
-      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
+  val route = {
+    pathPrefix("controller") {
+      path("round") {
+        complete(200 -> c.round.toString())
+      } ~
+      path("currentPlayer") {
+        complete(200 -> c.currentPlayer.toString)
+      } ~
+        path("enemyPlayer") {
+          complete(200 -> c.enemyPlayer.toString)
+        } ~
+        path("source") {
+          complete(200 -> c.source.toString)
+        } ~
+        path("target") {
+          complete(200 -> c.target.toString)
+        }
     }
   }
-  path("controller" / "target") {
-    get {
-      complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
-    }
-  }
-
-
 
   val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
 
