@@ -1,15 +1,14 @@
 package controller
 
-import javax.swing.{JButton}
+import javax.swing.JButton
 
 import state._
 import model._
-import observer.Observable
 
 import util.control.Breaks._
 import scala.collection.mutable.ListBuffer
 
-class Controller() extends Observable{
+class Controller() {
   var source: Tuple2[Int, Int] = _
   var target: Tuple2[Int, Int] = _
   var round: Int = 1
@@ -19,7 +18,9 @@ class Controller() extends Observable{
   var playerA: Player = _
   var playerB: Player = _
   var gamefield = new GameField()
+  var finish: Boolean = false
   initializeField()
+
   def initializeField(): Unit ={
     for(x <- 2 to 5){
       for(y <- 0 to 7){
@@ -108,7 +109,8 @@ class Controller() extends Observable{
       this.round += 1
       setNextPlayer()
     }
-    notifyObservers
+    //notifyObservers is replaces trough microservice
+    //println(gamefield)
     new SuccessDraw()
   }
 
@@ -349,14 +351,5 @@ class Controller() extends Observable{
       möglicheZüge.+=(left)
     if((right._1 >= 0 && right._1 < 8) && (right._2 >=0 && right._2 < 8) &&enemyPlayer.hasFigure(gamefield.get(right)))
       möglicheZüge.+=(right)
-  }
-
-  /*Sry for this ugly hack but im to lazy to research other approaches ¯\_(ツ)_/¯*/
-  def setRemoteButton(btn: JButton): Unit ={
-    this.remoteButton = btn
-  }
-  def performClick(): Unit ={
-    remoteButton.doClick()
-
   }
 }
