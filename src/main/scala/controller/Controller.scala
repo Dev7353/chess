@@ -8,7 +8,7 @@ import model._
 import util.control.Breaks._
 import scala.collection.mutable.ListBuffer
 
-class Controller() {
+class Controller(){
   var source: Tuple2[Int, Int] = _
   var target: Tuple2[Int, Int] = _
   var round: Int = 1
@@ -109,8 +109,6 @@ class Controller() {
       this.round += 1
       setNextPlayer()
     }
-    //notifyObservers is replaces trough microservice
-    //println(gamefield)
     new SuccessDraw()
   }
 

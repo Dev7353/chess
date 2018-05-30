@@ -1,0 +1,15 @@
+CREATE TABLE Player(
+    PlayerID INTEGER AUTO_INCREMENT,
+    Name VARCHAR(20),
+
+    PRIMARY KEY (PlayerID)
+) ENGINE=InnoDB;
+
+CREATE TABLE ChessPiece(
+  PieceID INTEGER AUTO_INCREMENT,
+  Designator VARCHAR(20),
+  PlayerID INTEGER,
+  Position VARCHAR(2),
+  PRIMARY KEY (PieceID),
+  FOREIGN KEY (PlayerID) REFERENCES Player(PlayerID)
+) ENGINE=InnoDB;
