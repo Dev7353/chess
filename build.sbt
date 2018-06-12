@@ -14,6 +14,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.12" % Test,
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.1",
   "com.typesafe.slick" %% "slick" % "3.2.3",
-
+  "com.lightbend.akka" %% "akka-stream-alpakka-slick" % "0.19",
+  "mysql" % "mysql-connector-java" % "5.1.34"
 )
-        

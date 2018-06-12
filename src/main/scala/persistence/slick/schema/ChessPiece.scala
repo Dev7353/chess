@@ -1,13 +1,13 @@
 package persistence.slick.schema
 import slick.jdbc.MySQLProfile.api._
-final case class ChessPiece (
+case class ChessPiece (
                             PieceID: Int,
                             Designator: String,
                             Position: String,
                             PlayerID: Int
                         )
 
-final class ChessPieceTable(tag: Tag) extends Table[ChessPiece](tag, "ChessPiece"){
+case class ChessPieceTable(tag: Tag) extends Table[ChessPiece](tag, "ChessPiece"){
 
   def PieceID     = column[Int]("PieceID", O.PrimaryKey, O.AutoInc)
   def Designator  = column[String]("Designator")

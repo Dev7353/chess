@@ -6,6 +6,7 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import model.Player
+import persistence.slick.SlickController
 import spray.json._
 
 import scala.io.StdIn
@@ -18,13 +19,14 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val jsonPMFormat = jsonFormat2(JsonPossibleMoves)
 }
 
-object ControllerWebService extends SprayJsonSupport with JsonSupport {
+object ControllerMicroService extends SprayJsonSupport with JsonSupport {
 
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
   // needed for the future flatMap/onComplete in the end
   implicit val executionContext = system.dispatcher
   val c = new Controller()
+  val s = SlickController(c)
 
   def main(args: Array[String]): Unit = {
     val route = {
@@ -82,7 +84,21 @@ object ControllerWebService extends SprayJsonSupport with JsonSupport {
               complete(200 -> c.putFigureTo((v.toInt,w.toInt), (x.toInt,y.toInt)).toString)
             }
           }
-      }
+      }~
+        pathPrefix("slick") {
+          path("load") {
+            s.load()
+            complete(200 -> "load successfully")
+          }~
+            path("save") {
+              s.save()
+              complete(200 -> "saved successfully")
+            }~
+            path("exit") {
+              System.exit(0)
+              complete(200 -> "EXIT")
+            }
+        }
     }
 
     val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
