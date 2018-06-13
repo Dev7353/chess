@@ -26,6 +26,8 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
   // needed for the future flatMap/onComplete in the end
   implicit val executionContext = system.dispatcher
   val c = new Controller()
+  c.setPlayerA(new Player("Rofl"))
+  c.setPlayerB(new Player("Kopter"))
   val s = SlickController(c)
 
   def main(args: Array[String]): Unit = {

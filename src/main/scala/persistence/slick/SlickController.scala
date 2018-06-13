@@ -6,7 +6,8 @@ import slick.jdbc.MySQLProfile.api._
 import akka.stream.alpakka.slick.scaladsl._
 import controller.Controller
 import model._
-import persistence.slick.schema.{Player => _, Session => _, _}
+import persistence.slick.schema._
+
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -52,7 +53,7 @@ case class SlickController(controller: Controller) {
     println(controller.gamefield)
 
   }
-
+  import schema._
   def save(): Unit ={
     val p1 = insertPlayer(Player(0, controller.playerA.toString))
     val p2 = insertPlayer(Player(0, controller.playerB.toString))
@@ -61,7 +62,7 @@ case class SlickController(controller: Controller) {
       for(j <- 0 until 8){
         val fig = controller.gamefield.get(i, j)
         if(controller.playerA.hasFigure(fig)){
-          insertChessPiece(ChesssPiece(
+          insertChessPiece(ChessPiece(
             0, fig.toString(), "" + i + "" + j, p1
           ))
         }
@@ -81,6 +82,7 @@ case class SlickController(controller: Controller) {
       Duration.Inf)
     }
   }
+
 
   def insertPlayer(p: Player): Int ={
     Await.ready(
