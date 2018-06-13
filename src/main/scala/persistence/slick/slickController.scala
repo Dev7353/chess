@@ -8,7 +8,7 @@ import slick.jdbc.MySQLProfile.api._
 import akka.stream.alpakka.slick.scaladsl._
 import com.typesafe.config.ConfigFactory
 import controller.Controller
-import model.Figure
+import model._
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
@@ -25,7 +25,35 @@ case class SlickController(controller: Controller) {
 
   def load(): Unit ={
     val erg = Await.ready(session.db.run(chessPiece.result), Duration.Inf).value
-    //todo: return json of gamefield
+    println("BEFORE")
+    println(controller.gamefield)
+    println("AFTER")
+    val s: Seq[ChessPieceTable#TableElementType] = erg match {
+      case Some(k) => k.get
+    }
+
+    var newField = new GameField()
+    for(e <- s){
+      val x = e.Position.charAt(0).asDigit
+      val y = e.Position.charAt(1).asDigit
+      val t: Figure = e.Designator match {
+        case "K" => new König
+        case "D" => new Dame
+        case "L" => new Läufer
+        case "T" => new Turm
+        case "B" => new Bauer((x, y), "UP")
+      }
+      for(i <- 0 until 8){
+        for(j <- 0 until 8){
+          if(controller.getFigure((i,j)) == t){
+            controller.gamefield.update((i,j), (x,y))
+          }
+        }
+      }
+    }
+    controller.gamefield = newField
+    println(controller.gamefield)
+
   }
 
   def save(): Unit ={
