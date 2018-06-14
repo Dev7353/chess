@@ -5,7 +5,7 @@ case class Session (PlayerID: Int, SessionName: String, Round: Int, PlayerAID: I
 class SessionTable(tag: Tag) extends Table[Session](tag, "Session"){
 
   def SessionID    = column[Int]("SessionID", O.PrimaryKey, O.AutoInc)
-  def SessionName  = column[String]("Name")
+  def SessionName  = column[String]("SessionName")
   def Round        = column[Int]("Round")
   def PlayerAID    = column[Int]("PlayerAID")
   def PlayerBID    = column[Int]("PlayerBID")

@@ -21,43 +21,29 @@ case class SlickController(controller: Controller) {
   lazy val session = TableQuery[SessionTable]
   implicit val slicksession = SlickSession.forConfig("chess")
 
-  def load(): Unit ={
-    val erg = Await.ready(slicksession.db.run(chessPiece.result), Duration.Inf).value
-    println("BEFORE")
-    println(controller.gamefield)
-    println("AFTER")
-    val s: Seq[ChessPieceTable#TableElementType] = erg match {
-      case Some(k) => k.get
-    }
+  def load(sessionid: Int): Unit ={
+    val query = for {
+      p <- player
+      c <- chessPiece if p.PlayerID === c.PlayerID
+      s <- session if (c.PlayerID === s.PlayerAID || c.PlayerID === s.PlayerBID) && s.SessionID === sessionid
 
-    var newField = new GameField()
-    for(e <- s){
-      val x = e.Position.charAt(0).asDigit
-      val y = e.Position.charAt(1).asDigit
-      val t: Figure = e.Designator match {
-        case "K" => new König
-        case "D" => new Dame
-        case "L" => new Läufer
-        case "T" => new Turm
-        case "B" => new Bauer((x, y), "UP")
-      }
-      for(i <- 0 until 8){
-        for(j <- 0 until 8){
-          if(controller.getFigure((i,j)) == t){
-            controller.gamefield.update((i,j), (x,y))
-          }
-        }
-      }
-    }
-    controller.gamefield = newField
-    println(controller.gamefield)
+    }yield(p.Name, c.Designator, c.Position, s.Round)
 
+
+    val erg = Await.ready(slicksession.db.run(
+      query.result
+    )
+      , Duration.Inf).value
+
+    for(e <- erg.get.get){
+      println(e)
+    }
   }
   import schema._
   def save(): Unit ={
     val p1 = insertPlayer(Player(0, controller.playerA.toString))
     val p2 = insertPlayer(Player(0, controller.playerB.toString))
-    val s = insertSession(Session(0, "test", controller.round, p1, p2))
+    val s = insertSession(Session(0, "lel", controller.round, p1, p2))
     for (i <- 0 until 8){
       for(j <- 0 until 8){
         val fig = controller.gamefield.get(i, j)

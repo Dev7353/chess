@@ -89,8 +89,10 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
       }~
         pathPrefix("slick") {
           path("load") {
-            s.load()
-            complete(200 -> "load successfully")
+            parameters('id){ (id) =>
+              s.load(id.toInt)
+              complete(200 -> "load successfully")
+            }
           }~
             path("save") {
                s.save()
