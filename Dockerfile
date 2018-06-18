@@ -34,7 +34,4 @@ RUN \
 WORKDIR /controller
 ADD target/scala-2.12/ /controller/scala-2.12
 EXPOSE 8080
-# build  fat jar
-CMD sbt assembly
-
-CMD java -jar scala-2.12/de.htwg.se.chess-assembly-0.1.jar
+CMD java -jar scala-2.12/chess-assembly-0.1.jar
