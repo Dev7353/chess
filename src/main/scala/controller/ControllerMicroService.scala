@@ -95,7 +95,7 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
             }
           }~
             path("save") {
-               s.save()
+              s.save()
               complete(200 -> "saved successfully")
             }~
             path("exit") {

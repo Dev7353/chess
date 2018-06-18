@@ -38,6 +38,7 @@ case class SlickController(controller: Controller) {
     val result: Seq[(String, String, String, Int)] = erg match {
       case Some(k) => k match {
         case Success(l) =>  l
+        case Failure(l) => return
       }
     }
     controller.round = result.head._4

@@ -1,13 +1,14 @@
 package controller
 
 import javax.swing.JButton
-
 import state._
 import model._
 
 import util.control.Breaks._
 import scala.collection.mutable.ListBuffer
-
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.ExecutionContext.Implicits.global
 class Controller(){
   var source: Tuple2[Int, Int] = _
   var target: Tuple2[Int, Int] = _
@@ -93,7 +94,9 @@ class Controller(){
       return new NoAllowedMoveException()
     }
 
-    if(gamefield.isOccupied(target)){
+    val ocupada: Future[Boolean] = Future(gamefield.isOccupied(target))
+
+    if(Await.result(ocupada, Duration.Inf)){
       if(currentPlayer.hasFigure(gamefield.get(target))){
         return new OwnTargetException()
       }
