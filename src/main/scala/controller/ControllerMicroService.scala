@@ -5,7 +5,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
-import model.Player
+import model.{Figure, Player}
 import persistence.slick.SlickController
 import spray.json._
 
@@ -13,10 +13,12 @@ import scala.io.StdIn
 
 // domain model
 final case class JsonPossibleMoves(moves: List[Tuple2[Int, Int]], hasFigure: Boolean)
+final case class JsonGameField(figures: Map[String, List[Tuple3[String, Int, Int]]])
 
 // collect your json format instances into a support trait:
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val jsonPMFormat = jsonFormat2(JsonPossibleMoves)
+  implicit val jsonGFFormat: RootJsonFormat[JsonGameField] = jsonFormat1(JsonGameField)
 }
 
 object ControllerMicroService extends SprayJsonSupport with JsonSupport {
@@ -26,8 +28,6 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
   // needed for the future flatMap/onComplete in the end
   implicit val executionContext = system.dispatcher
   val c = new Controller()
-  c.setPlayerA(new Player("Rofl"))
-  c.setPlayerB(new Player("Kopter"))
   val s = SlickController(c)
 
   def main(args: Array[String]): Unit = {
@@ -89,7 +89,7 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
       }~
         pathPrefix("slick") {
           path("load") {
-            parameters('id){ (id) =>
+            parameters('id){ id =>
               s.load(id.toInt)
               complete(200 -> "load successfully")
             }
@@ -101,6 +101,11 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
             path("exit") {
               System.exit(0)
               complete(200 -> "EXIT")
+            }~
+            path("download") {
+              val figures = s.download()
+              println(c.gamefield)
+              complete(200 -> figures.toJson)
             }
         }
     }

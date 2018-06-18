@@ -22,11 +22,11 @@ class Controller(){
   initializeField()
 
   def initializeField(): Unit ={
-    for(x <- 2 to 5){
-      for(y <- 0 to 7){
-        gamefield.set((x,y), new Figure)
-      }
-    }
+    for{
+      x <- 2 to 5
+      y <- 0 to 7
+    }yield gamefield.set((x,y), new Figure)
+
     gamefield.set((0,0), new Turm())
     gamefield.set((0,7), new Turm())
     gamefield.set((0,1), new Läufer())
@@ -57,17 +57,20 @@ class Controller(){
    playerA = player
     currentPlayer = playerA
 
-    for(i <- 0 to 1; j <- 0 to 7){
-      playerA.addFigure(gamefield.get((i,j)))
-    }
+    for{
+      i <- 0 to 1
+      j <- 0 to 7
+    } playerA.addFigure(gamefield.get((i,j)))
   }
 
   def setPlayerB(player:Player): Unit ={
     playerB = player
     enemyPlayer = playerB
-    for(i <- 6 to 7; j <- 0 to 7){
-      playerB.addFigure(gamefield.get((i,j)))
-    }
+    for{
+      i <- 6 to 7
+      j <- 0 to 7
+    } playerB.addFigure(gamefield.get((i,j)))
+
   }
 
 
