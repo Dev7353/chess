@@ -7,6 +7,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import model.{Figure, Player}
 import persistence.slick.SlickController
+import persistence.mongodb.MongodbController
 import spray.json._
 
 import scala.io.StdIn
@@ -29,6 +30,7 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
   implicit val executionContext = system.dispatcher
   val c = new Controller()
   val s = SlickController(c)
+  val m = MongodbController(c)
 
   def main(args: Array[String]): Unit = {
     val route = {
@@ -106,6 +108,22 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
               val figures = s.download()
               println(c.gamefield)
               complete(200 -> figures.toJson)
+            }
+        }~
+        pathPrefix("mongodb") {
+          path("load") {
+            parameters('id){ id =>
+              m.load(id.toInt)
+              complete(200 -> "load successfully")
+            }
+          }~
+            path("save") {
+              m.save()
+              complete(200 -> "saved successfully")
+            }~
+            path("exit") {
+              System.exit(0)
+              complete(200 -> "EXIT")
             }
         }
     }
