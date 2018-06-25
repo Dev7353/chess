@@ -17,5 +17,6 @@ libraryDependencies ++= Seq(
   "com.lightbend.akka" %% "akka-stream-alpakka-slick" % "0.19",
   "mysql" % "mysql-connector-java" % "5.1.34",
   "org.mongodb.scala" %% "mongo-scala-driver" % "2.3.0",
-  "io.netty" % "netty-all" % "4.1.25.Final"
+  "io.netty" % "netty-all" % "4.1.25.Final",
+  "com.typesafe.play" %% "play-json" % "2.6.7"
 )
