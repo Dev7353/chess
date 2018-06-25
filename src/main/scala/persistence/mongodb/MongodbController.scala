@@ -123,8 +123,8 @@ case class MongodbController(controller: Controller) {
   def getFigure(piece: String, pos: Tuple2[Int, Int], direction: String): Figure = {
     piece match {
       case "B" => direction match {
-        case "UP" => new Bauer(pos, "DOWN")
-        case "DOWN" => new Bauer(pos, "UP")
+        case "UP" => new Bauer(pos, "UP")
+        case "DOWN" => new Bauer(pos, "DOWN")
       }
       case "K" =>
         new König
