@@ -2,7 +2,6 @@ package persistence.mongodb
 
 import java.util.concurrent.TimeUnit
 
-import play.api.libs.json
 import controller.Controller
 import org.mongodb.scala._
 import Helpers._
@@ -11,7 +10,7 @@ import com.mongodb.BasicDBObject
 import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.bson.conversions
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, Json}
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Await
@@ -20,6 +19,7 @@ import scala.concurrent.duration.Duration
 case class MongodbController(controller: Controller) {
   System.setProperty("org.mongodb.async.type", "netty")
   //val mongoClient: MongoClient = MongoClient()
+  val mongoClient: MongoClient = MongoClient("mongodb+srv://Stef:5RnCuYQEm3deXvx7@chesscluster-6z5vv.mongodb.net/test?retryWrites=true")
 
   val database: MongoDatabase = mongoClient.getDatabase("ChessCluster")
   val collection: MongoCollection[Document] = database.getCollection("sessions")
@@ -35,6 +35,28 @@ case class MongodbController(controller: Controller) {
         var gf = new GameField
         controller.setPlayerA(new Player((session \ "p1").get.toString().replaceAll("\"", "")))
         controller.setPlayerB(new Player((session \ "p2").get.toString().replaceAll("\"", "")))
+        val gamefield = (session \ "gamefield").get.as[JsArray]
+
+
+        for (e <- gamefield.value) {
+          val player = (e \ "Player").get.toString().replaceAll("\"", "") //name
+          val piece = (e \ "designator").get.toString().replaceAll("\"", "") //designator
+          val x = (e \ "Position" \ "x").get.toString().toInt
+          val y = (e \ "Position" \ "y").get.toString().toInt
+          val pos = (x, y) //position
+
+
+          if (player == controller.playerA.toString) {
+
+            val f: Figure = getFigure(piece, pos, "UP")
+            gf.set(pos, f)
+            listA += f
+          } else {
+            val f: Figure = getFigure(piece, pos, "DOWN")
+            gf.set(pos, f)
+            listB += f
+          }
+        }
 
         for {
           i <- 0 to 7
@@ -58,6 +80,9 @@ case class MongodbController(controller: Controller) {
             gf.set((i, j), Figure())
           }
         }
+        controller.playerA.figures = listA
+        controller.playerB.figures = listB
+        controller.gamefield = gf
       }
 
       override def onError(e: Throwable): Unit = println("ERROR! " + e)
