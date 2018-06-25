@@ -4,16 +4,17 @@ import controller.Controller
 import org.mongodb.scala._
 import Helpers._
 import org.mongodb.scala.bson.collection.immutable.Document
-
+import org.mongodb.scala.model.Filters._
 import scala.collection.mutable.ListBuffer
 
 case class MongodbController(controller: Controller) {
   System.setProperty("org.mongodb.async.type", "netty")
-  val mongoClient: MongoClient = MongoClient()
+  //val mongoClient: MongoClient = MongoClient()
 
   val database: MongoDatabase = mongoClient.getDatabase("ChessCluster")
+  val collection: MongoCollection[Document] = database.getCollection("sessions")
   def load(sessionid: Int): Unit = {
-    print("Test")
+    collection.find(equal("sessionid", 0)).printHeadResult()
   }
 
   def save(): Unit = {
@@ -35,7 +36,7 @@ case class MongodbController(controller: Controller) {
         field += Document("id" -> 0, "designator" -> fig.toString(), "Position" -> Document("x"-> i, "y" -> j), "Player" -> p2)
       }
     }
-    val collection: MongoCollection[Document] = database.getCollection("sessions")
+
     collection.drop().results()
     val doc: Document = Document("sessionid" -> 0, "p1" -> p1, "p2" -> p2,
       "gamefield" -> field)
