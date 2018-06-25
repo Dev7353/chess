@@ -112,14 +112,16 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
         }~
         pathPrefix("mongodb") {
           path("load") {
-            parameters('id){ id =>
-              m.load(id.toInt)
+            parameters('name){ name =>
+              m.load(name)
               complete(200 -> "load successfully")
             }
           }~
             path("save") {
-              m.save()
-              complete(200 -> "saved successfully")
+              parameters('name) { name =>
+                m.save(name)
+                complete(200 -> "saved successfully")
+              }
             }~
             path("exit") {
               System.exit(0)

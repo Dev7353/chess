@@ -24,9 +24,9 @@ case class MongodbController(controller: Controller) {
   val database: MongoDatabase = mongoClient.getDatabase("ChessCluster")
   val collection: MongoCollection[Document] = database.getCollection("sessions")
 
-  def load(sessionid: Int): Unit = {
+  def load(name: String): Unit = {
 
-    val session = collection.find(equal("sessionid", 0)).subscribe(new Observer[Document] {
+    val session = collection.find(equal("name", name)).subscribe(new Observer[Document] {
       override def onNext(result: Document): Unit = {
         val session = Json.parse(result.toJson())
         controller.round = (session \ "session" \ "round").get.toString().toInt
@@ -91,10 +91,10 @@ case class MongodbController(controller: Controller) {
     })
   }
 
-  def save(): Unit = {
+  def save(name: String): Unit = {
     val p1 = controller.playerA.toString
     val p2 = controller.playerB.toString
-    val session = Document("id" -> 0, "round" -> controller.round, "PlayerA" -> p1, "PlayerB" -> p2)
+    val session = Document("id" -> 0, "name" -> name, "round" -> controller.round, "PlayerA" -> p1, "PlayerB" -> p2)
     var field = new ListBuffer[Document]
 
     for {
