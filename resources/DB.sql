@@ -15,12 +15,11 @@ CREATE TABLE ChessPiece(
 ) ENGINE=InnoDB;
 
 CREATE TABLE Session(
-  SessionID INTEGER AUTO_INCREMENT,
   SessionName VARCHAR(20),
   Round INTEGER,
   PlayerAID INTEGER,
   PlayerBID INTEGER,
-  PRIMARY KEY (SessionID),
+  PRIMARY KEY (SessionName),
   FOREIGN KEY (PlayerAID) REFERENCES Player(PlayerID),
   FOREIGN KEY (PlayerBID) REFERENCES Player(PlayerID)
 ) ENGINE=InnoDB;

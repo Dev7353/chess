@@ -27,7 +27,7 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
   implicit val materializer = ActorMaterializer()
   // needed for the future flatMap/onComplete in the end
   implicit val executionContext = system.dispatcher
-  val c = new Controller()
+  var c = new Controller()
   val s = SlickController(c)
 
   def main(args: Array[String]): Unit = {
@@ -78,6 +78,8 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
           }~
           path("start") {
             parameters('playerOne, 'playerTwo){ (playerOne, playerTwo) =>
+              c = new Controller()
+              s.controller = c
               complete(200-> c.setPlayerA(new Player(playerOne)), c.setPlayerB(new Player(playerTwo)))
             }
           }~
@@ -89,14 +91,16 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
       }~
         pathPrefix("slick") {
           path("load") {
-            parameters('id){ id =>
-              s.load(id.toInt)
+            parameters('name){name =>
+              s.load(name)
               complete(200 -> "load successfully")
             }
           }~
             path("save") {
-              s.save()
-              complete(200 -> "saved successfully")
+              parameters('name){ name =>
+                s.save(name)
+                complete(200 -> "saved successfully")
+              }
             }~
             path("exit") {
               System.exit(0)
@@ -104,7 +108,6 @@ object ControllerMicroService extends SprayJsonSupport with JsonSupport {
             }~
             path("download") {
               val figures = s.download()
-              println(c.gamefield)
               complete(200 -> figures.toJson)
             }
         }

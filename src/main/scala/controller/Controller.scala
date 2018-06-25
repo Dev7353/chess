@@ -157,9 +157,6 @@ class Controller(){
             möglicheZüge.+=:(firstDraw)
 
         }else if(b.getDirection() == "DOWN"){
-          println("bauer gets down")
-          println(this.currentPlayer)
-          println(this.enemyPlayer)
           val up = (source._1-1, source._2)
           val left = (source._1-1, source._2-1)
           val right = (source._1-1, source._2+1)

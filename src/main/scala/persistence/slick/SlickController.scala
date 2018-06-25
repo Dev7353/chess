@@ -13,7 +13,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success}
 
-case class SlickController(controller: Controller) {
+case class SlickController(var controller: Controller) {
 
   implicit val system = ActorSystem()
   implicit val mat = ActorMaterializer()
@@ -22,11 +22,11 @@ case class SlickController(controller: Controller) {
   lazy val session = TableQuery[SessionTable]
   implicit val slicksession = SlickSession.forConfig("chess")
 
-  def load(sessionid: Int): Unit ={
+  def load(sessionName: String): Unit ={
     val query = for {
       p <- player
       c <- chessPiece if p.PlayerID === c.PlayerID
-      s <- session if (c.PlayerID === s.PlayerAID || c.PlayerID === s.PlayerBID) && s.SessionID === sessionid
+      s <- session if (c.PlayerID === s.PlayerAID || c.PlayerID === s.PlayerBID) && s.SessionName === sessionName
 
     }yield(p.Name, c.Designator, c.Position, s.Round)
 
@@ -41,6 +41,7 @@ case class SlickController(controller: Controller) {
         case Failure(l) => return
       }
     }
+
     controller.round = result.head._4
     var listA = new ListBuffer[Figure]()
     var listB = new ListBuffer[Figure]()
@@ -84,8 +85,8 @@ case class SlickController(controller: Controller) {
   def getFigure(piece: String, pos:Tuple2[Int, Int], direction: String): Figure ={
     piece match {
       case "B" => direction match{
-        case "UP" => new Bauer(pos, "DOWN")
-        case "DOWN" => new Bauer(pos, "UP")
+        case "UP" => new Bauer(pos, "UP")
+        case "DOWN" => new Bauer(pos, "DOWN")
       }
       case "K" =>
         new König
@@ -109,10 +110,10 @@ case class SlickController(controller: Controller) {
     (s.head, s.last)
   }
 
-  def save(): Unit ={
+  def save(name: String): Unit ={
     val p1 = insertPlayer(Player(0, controller.playerA.toString))
     val p2 = insertPlayer(Player(0, controller.playerB.toString))
-    val s = insertSession(Session(0, "lel", controller.round, p1, p2))
+    val s = insertSession(Session(name, controller.round, p1, p2))
     for{
       i <- 0 to 7
       j <- 0 to 7
@@ -167,10 +168,10 @@ case class SlickController(controller: Controller) {
     ).value.get.get
   }
 
-  def insertSession(s: Session): Int ={
+  def insertSession(s: Session): Unit ={
     Await.ready(
-      slicksession.db.run(session returning session.map(_.SessionID) += s),
+      slicksession.db.run(session += s),
       Duration.Inf
-    ).value.get.get
+    )
   }
 }
