@@ -110,8 +110,7 @@ case class MongodbController(controller: Controller) {
         field += Document("id" -> 0, "designator" -> fig.toString(), "Position" -> Document("x" -> i, "y" -> j), "Player" -> p2)
       }
     }
-
-    collection.drop().results()
+    
     val doc: Document = Document("sessionid" -> 0, "p1" -> p1, "p2" -> p2, "session" -> session,
       "gamefield" -> field)
     collection.insertOne(doc).results()
