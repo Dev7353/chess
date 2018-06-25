@@ -25,8 +25,7 @@ case class MongodbController(controller: Controller) {
   val collection: MongoCollection[Document] = database.getCollection("sessions")
 
   def load(name: String): Unit = {
-
-    val session = collection.find(equal("name", name)).subscribe(new Observer[Document] {
+    val session = collection.find(equal("sessionname", name)).subscribe(new Observer[Document] {
       override def onNext(result: Document): Unit = {
         val session = Json.parse(result.toJson())
         controller.round = (session \ "session" \ "round").get.toString().toInt
@@ -110,8 +109,8 @@ case class MongodbController(controller: Controller) {
         field += Document("id" -> 0, "designator" -> fig.toString(), "Position" -> Document("x" -> i, "y" -> j), "Player" -> p2)
       }
     }
-    
-    val doc: Document = Document("sessionid" -> 0, "p1" -> p1, "p2" -> p2, "session" -> session,
+
+    val doc: Document = Document("sessionid" -> 0, "sessionname" -> name, "p1" -> p1, "p2" -> p2, "session" -> session,
       "gamefield" -> field)
     collection.insertOne(doc).results()
 
